@@ -1,2 +1,5 @@
-
-.vscode/launch.json
+dist
+MPdownloader.egg-info
+.vscode
+Multporn.egg-info
+test.py
