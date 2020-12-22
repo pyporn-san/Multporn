@@ -222,9 +222,12 @@ class Webpage:
 
     """
     A Webpage class that bundles together everything related to <https://multporn.net>
-    If you're confused what I mean by "webpage", this is and example(oviously NSFW): <https://multporn.net/category/cosplay>  
+    If you're confused what I mean by "webpage", this is and example(oviously NSFW): <https://multporn.net/category/cosplay>
     """
     def __init__(self, url):
+        """
+        initializing the webpage object
+        """
         self.__url = url
         self.__soup = BeautifulSoup(requests.get(url).text, "html.parser")
 
