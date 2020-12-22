@@ -1,7 +1,7 @@
 ![Pip Package](https://github.com/pyporn-san/MPdownloader/workflows/Upload%20Python%20Package/badge.svg)
-# MPdownloader
+# Multporn
 
-MPdownloader is a Python library used to interact with [multporn](https://multporn.net/) via python.
+Multporn is a Python library used to interact with [multporn](https://multporn.net/) via python.
 
 ## Installation
 
@@ -14,7 +14,7 @@ pip install MPdownloader
 ## Usage
 
 ```python
-import Multporn
+from multporn import Multporn
 
 comic = Multporn("https://multporn.net/comics/between_friends")
 
