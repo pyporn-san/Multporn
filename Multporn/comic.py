@@ -116,6 +116,9 @@ class Multporn(RequestHandler):
 
     @property
     def tags(self) -> List[str]:
+        """
+        Returns a list of tags empty if non found
+        """
         try:
             tags = [i.next.text for i in self.__soup.find(
                 text="Tags: ").find_next().contents]
@@ -150,6 +153,9 @@ class Multporn(RequestHandler):
         return name
 
     def __str__(self):
+        """
+        returns the name of the comic
+        """
         return self.name
 
     def downlaodImages(self, output: bool = True, root: Path = Path("Comics/"), printProgress: bool = True):
@@ -202,6 +208,11 @@ class Multporn(RequestHandler):
 
 
 class Webpage:
+
+    """
+    A Webpage class that bundles together everything related to <https://multporn.net>
+    If you're confused what I mean by "webpage", this is and example(oviously NSFW): <https://multporn.net/category/cosplay>  
+    """
     def __init__(self, url):
         self.__url = url
         self.__soup = BeautifulSoup(requests.get(url).text, "html.parser")
