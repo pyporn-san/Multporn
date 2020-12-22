@@ -228,6 +228,3 @@ class Webpage:
             self.__name = sanitize_filepath(
                 self.__soup.find("meta", attrs={"property": "og:title"})["content"])
         return self.__name
-
-
-print(Webpage("https://multporn.net/comics/kim_possible"))
