@@ -93,7 +93,7 @@ class Multporn(RequestHandler):
 
     Basic Usage
     -----------
-        >>> from Multporn import comic
+        >>> from multporn import Multporn
         >>> comic = Multporn("https://multporn.net/comics/between_friends")
         >>> print(comic)
         'Between Friends'
