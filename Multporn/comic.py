@@ -21,7 +21,7 @@ class RequestHandler(object):
     """
     RequestHandler
     ==============
-    Defines a synchronous request handler class that provides methods and 
+    Defines a synchronous request handler class that provides methods and
     properties for working with REST APIs that is backed by the `requests`
     library.
     """
@@ -49,8 +49,8 @@ class RequestHandler(object):
         """
         The retry strategy returns the retry configuration made up of the
         number of total retries, the status forcelist as well as the backoff
-        factor. It is used in the session property where these values are 
-        passed to the HTTPAdapter. 
+        factor. It is used in the session property where these values are
+        passed to the HTTPAdapter.
         """
         return Retry(total=self.total,
                      status_forcelist=self.status_forcelist,
@@ -62,7 +62,7 @@ class RequestHandler(object):
         """
         Creates a custom session object. A request session provides cookie
         persistence, connection-pooling, and further configuration options
-        that are exposed in the RequestHandler methods in form of parameters 
+        that are exposed in the RequestHandler methods in form of parameters
         and keyword arguments.
         """
         assert_status_hook = lambda response, * \
@@ -77,7 +77,7 @@ class RequestHandler(object):
 
     def get(self, url: str, params: dict = None, **kwargs) -> Response:
         """
-        Returns the GET request encoded in `utf-8`. Adds proxies to this session 
+        Returns the GET request encoded in `utf-8`. Adds proxies to this session
         on the fly if urllib is able to pick up the system's proxy settings.
         """
         response = self.session.get(
@@ -219,7 +219,7 @@ class Webpage:
     def name(self) -> str:
         """
         Return the name of this webpage
-        usually is a category, character, author, etc 
+        usually is a category, character, author, etc
         """
         try:
             self.__name = sanitize_filepath(
