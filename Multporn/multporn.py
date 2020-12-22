@@ -17,7 +17,7 @@ from urllib3.util.retry import Retry
 
 
 class RequestHandler(object):
-    
+
     """
     RequestHandler
     ==============
