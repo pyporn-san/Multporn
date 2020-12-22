@@ -1,1 +1,1 @@
-from .comic import *
+from .multporn import *

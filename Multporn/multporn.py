@@ -169,7 +169,7 @@ class Multporn(RequestHandler):
         """
         return self.name
 
-    def downlaodImages(self, output: bool = True, root: Path = Path("Comics/"), printProgress: bool = True):
+    def downloadImages(self, output: bool = True, root: Path = Path("Comics/"), printProgress: bool = True):
         """
         Downloads all comic pages that don't already exist in the directory
         logging can be disabled by passing false to printProgress

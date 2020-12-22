@@ -6,11 +6,11 @@ with open("requirements.txt", "r", encoding="utf-8") as fh:
     install_requires = fh.read().splitlines()
 print(install_requires)
 setuptools.setup(
-    name="MPdownloader",
+    name="Multporn",
     version="0.0.1",
-    author="pyporn-chan",
-    author_email="pypornchan@example.com",
-    description="Package Used to interact with multporn.net via python",
+    author="pyporn-san",
+    author_email="pypornsan@gmail.com",
+    description="python library used to interact with multporn.net via python",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/pypa/sampleproject",
