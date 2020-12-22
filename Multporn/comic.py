@@ -33,7 +33,7 @@ class RequestHandler(object):
     def __init__(self,
                  timeout: Tuple[float, float] = _timeout,
                  total: int = _total,
-                 status_forcelist: List[int] = _status_forcelist,
+                 status_forcelist: List[int] = _status_forcelist.copy(),
                  backoff_factor: int = _backoff_factor):
         """
         Instantiates a new request handler object.
@@ -90,7 +90,7 @@ class Multporn(RequestHandler):
 
     def __init__(self, url: str, download: bool = False, timeout: Tuple[float, float] = RequestHandler._timeout,
                  total: int = RequestHandler._total,
-                 status_forcelist: List[int] = RequestHandler._status_forcelist,
+                 status_forcelist: List[int] = RequestHandler._status_forcelist.copy(),
                  backoff_factor: int = RequestHandler._backoff_factor):
         """
         Start a request session and load soup from <https://multporn.net> for this link.
