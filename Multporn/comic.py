@@ -2,18 +2,17 @@ import mimetypes
 import os
 from pathlib import Path
 from typing import List, Tuple
-from urllib.parse import urljoin, urlparse
+from urllib.parse import urljoin
 from urllib.request import getproxies
 
-import certifi
+
 import requests
 from bs4 import BeautifulSoup
 from faker import Faker
 from pathvalidate import sanitize_filepath
-from requests import HTTPError, Session
+from requests import Session
 from requests.adapters import HTTPAdapter
 from requests.models import Response
-from requests_html import HTMLSession
 from urllib3.util.retry import Retry
 
 
