@@ -87,6 +87,17 @@ class RequestHandler(object):
 
 
 class Multporn(RequestHandler):
+
+    """
+    A <https://multporn.net> comic class
+
+    Basic Usage
+    -----------
+        >>> from Multporn import comic
+        >>> comic = Multporn("https://multporn.net/comics/between_friends")
+        >>> print(comic)
+        'Between Friends'
+    """
     HOME = "http://multporn.net/"
 
     def __init__(self, url: str, download: bool = False, timeout: Tuple[float, float] = RequestHandler._timeout,
