@@ -1,25 +1,25 @@
 ![Pip Package](https://github.com/pyporn-san/MPdownloader/workflows/Upload%20Python%20Package/badge.svg)
-# MPdownloader
+# python multporn scraper
 
-MPdownloader is a Python library used to interact with [multporn](https://multporn.net/) via python.
+multporn is a Python library used to interact with [multporn](https://multporn.net/) via python.
 
 ## Installation
 
-Use the package manager [pip](https://pip.pypa.io/en/stable/) to install MPdownloader.
+Use the package manager [pip](https://pip.pypa.io/en/stable/) to install multporn.
 
 ```bash
-pip install MPdownloader
+pip install multporn
 ```
 
 ## Usage
 
 ```python
-import Multporn
+from multporn import Multporn
 
 comic = Multporn("https://multporn.net/comics/between_friends")
 
 print(comic) # Between Friends
-print(comic.tag) # ['Best', 'Blowjob', 'Cunnilingus', 'Lolicon', 'Oral sex', 'Stockings', 'Straight', 'Straight Shota', 'Virgin']
+print(comic.tags) # ['Best', 'Blowjob', 'Cunnilingus', 'Lolicon', 'Oral sex', 'Stockings', 'Straight', 'Straight Shota', 'Virgin']
 comic.downloadImages() # Downloads the comic to /comic/Between Friends/
 ```
 
