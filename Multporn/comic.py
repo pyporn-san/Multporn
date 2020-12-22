@@ -105,7 +105,7 @@ class Multporn(RequestHandler):
             self.downlaodImages(self)
 
     @property
-    def imageUrls(self) -> list[str]:
+    def imageUrls(self) -> List[str]:
         """
         Return the url of every image in the comic
         """
@@ -114,7 +114,7 @@ class Multporn(RequestHandler):
         return imageUrls
 
     @property
-    def tags(self) -> list[str]:
+    def tags(self) -> List[str]:
         try:
             tags = [i.next.text for i in self.__soup.find(
                 text="Tags: ").find_next().contents]
