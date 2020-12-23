@@ -262,3 +262,24 @@ class Sort(Enum):
     Relevant = "search_api_relevance"
     Author = "Author"
 
+
+@unique
+class Types(Enum):
+    """
+    Known types of content
+    """
+    All = "All"
+    Comics = "1"
+    HentaiManga = "2"
+    GayComics = "3"
+    CartoonPictures = "4"
+    HentaiPictures = "5"
+    Games = "6"
+    Flash = "7"
+    CartoonVideos = "8"
+    HentaiVideos = "9"
+    GIFAnimations = "10"
+    Rule63 = "11"
+    AuthorsAlbums = "12"
+    Humor = "13"
+    
