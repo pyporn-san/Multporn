@@ -1,4 +1,4 @@
-# python multporn scraper
+# Python multporn scraper
 
 [![Pip Package](https://github.com/pyporn-san/MPdownloader/workflows/Upload%20Python%20Package/badge.svg)](https://pypi.org/project/Multporn/)[![Codacy Badge](https://api.codacy.com/project/badge/Grade/0d152a094f5c481e8b886be58e13aeaf)](https://app.codacy.com/gh/pyporn-san/Multporn?utm_source=github.com&utm_medium=referral&utm_content=pyporn-san/Multporn&utm_campaign=Badge_Grade)
 
