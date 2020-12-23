@@ -159,7 +159,14 @@ class Multporn(RequestHandler):
             name = sanitize_filepath(
                 self.__soup.find("meta", attrs={"property": "og:title"})["content"])
         return name
-
+    
+    @property
+    def url(self):
+        """
+        Returns the url associated with the comic
+        """
+        return self.__url
+    
     def __str__(self):
         """
         returns the name of the comic
