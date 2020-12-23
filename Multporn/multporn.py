@@ -203,6 +203,17 @@ class Multporn(RequestHandler):
                 text="Section: ").find_next().contents]
         return Sections
     
+    @property
+    def characters(self):
+        """
+        Returns a list of characters listed in the comic
+        Only present for comics
+        May be empty even for comics
+        """
+        Sections = [i.next.text for i in self.__soup.find(
+                text="Characters: ").find_next().contents]
+        return Sections
+    
     def downloadImages(self, output: bool = True, root: Path = Path("Comics/"), printProgress: bool = True):
         """
         Downloads all comic pages that don't already exist in the directory
