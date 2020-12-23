@@ -190,7 +190,7 @@ class Multporn(RequestHandler):
         artists = [i.next.text for i in self.__soup.find(
                 text="Author: ").find_next().contents]
         return artists
-    
+
     @property
     def sections(self):
 
@@ -202,7 +202,7 @@ class Multporn(RequestHandler):
         Sections = [i.next.text for i in self.__soup.find(
                 text="Section: ").find_next().contents]
         return Sections
-    
+
     @property
     def characters(self):
         """
@@ -213,7 +213,7 @@ class Multporn(RequestHandler):
         Sections = [i.next.text for i in self.__soup.find(
                 text="Characters: ").find_next().contents]
         return Sections
-    
+
     @property
     def exists(self):
         return len(self.imageUrls)>0
@@ -240,7 +240,7 @@ class Multporn(RequestHandler):
                         existingEnd = i
                     fileExists = True
                     break
-            if(fileExists == False):
+            if(not fileExists):
                 Updated += 1
                 if(existingStart != -1):
                     if(printProgress):
