@@ -13,7 +13,7 @@ setuptools.setup(
     description="python library used to interact with multporn.net via python",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/pypa/sampleproject",
+    url="https://github.com/pyporn-san/Multporn",
     install_requires=install_requires,
     packages=setuptools.find_packages(),
     classifiers=[
