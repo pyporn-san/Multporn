@@ -19,9 +19,14 @@ from multporn import Multporn
 
 comic = Multporn("https://multporn.net/comics/between_friends")
 
-print(comic) # Between Friends
-print(comic.tags) # ['Best', 'Blowjob', 'Cunnilingus', 'Lolicon', 'Oral sex', 'Stockings', 'Straight', 'Straight Shota', 'Virgin']
-comic.downloadImages() # Downloads the comic to /comic/Between Friends/
+# Between Friends
+print(comic)
+
+ # ['Best', 'Blowjob', 'Cunnilingus', 'Lolicon', 'Oral sex', 'Stockings', 'Straight', 'Straight Shota', 'Virgin']
+print(comic.tags)
+
+# Downloads the comic to /comic/Between Friends/
+comic.downloadImages()
 ```
 
 ## Contributing
