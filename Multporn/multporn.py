@@ -88,6 +88,8 @@ class RequestHandler(object):
 class Multporn(RequestHandler):
 
     """
+    Multporn
+    ========
     A <https://multporn.net> comic class
 
     Basic Usage
@@ -220,6 +222,8 @@ class Multporn(RequestHandler):
 class Webpage:
 
     """
+    Webpage
+    =======
     A Webpage class that bundles together everything related to <https://multporn.net>
     If you're confused what I mean by "webpage", this is and example(oviously NSFW): <https://multporn.net/category/cosplay>
     """
