@@ -179,7 +179,7 @@ class Multporn(RequestHandler):
         Return the number of pages
         """
         return len(self.imageUrls)
-    
+
     @property
     def artists(self):
         """
