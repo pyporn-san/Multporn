@@ -173,6 +173,13 @@ class Multporn(RequestHandler):
         """
         return self.name
 
+    @property
+    def pageCount(self):
+        """
+        Return the number of pages
+        """
+        return len(self.imageUrls)
+    
     def downloadImages(self, output: bool = True, root: Path = Path("Comics/"), printProgress: bool = True):
         """
         Downloads all comic pages that don't already exist in the directory
