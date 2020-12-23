@@ -160,11 +160,63 @@ class Multporn(RequestHandler):
                 self.__soup.find("meta", attrs={"property": "og:title"})["content"])
         return name
 
+    @property
+    def url(self):
+        """
+        Returns the url associated with the comic
+        """
+        return self.__url
+    
     def __str__(self):
         """
         returns the name of the comic
         """
         return self.name
+
+    @property
+    def pageCount(self):
+        """
+        Return the number of pages
+        """
+        return len(self.imageUrls)
+    
+    @property
+    def artists(self):
+        """
+        Return a list of artists
+        only present for comics
+        most likely a single artist but multiple artists are possible that's why the return is a list
+        """
+        artists = [i.next.text for i in self.__soup.find(
+                text="Author: ").find_next().contents]
+        return artists
+    
+    @property
+    def sections(self):
+
+        """
+        Returns a list of sections that this comic is present in
+        only present for comics
+        most likely a single section but multiple sections are possible that's why the return is a list
+        """
+        Sections = [i.next.text for i in self.__soup.find(
+                text="Section: ").find_next().contents]
+        return Sections
+    
+    @property
+    def characters(self):
+        """
+        Returns a list of characters listed in the comic
+        Only present for comics
+        May be empty even for comics
+        """
+        Sections = [i.next.text for i in self.__soup.find(
+                text="Characters: ").find_next().contents]
+        return Sections
+    
+    @property
+    def exists(self):
+        return len(self.imageUrls)>0
 
     def downloadImages(self, output: bool = True, root: Path = Path("Comics/"), printProgress: bool = True):
         """
