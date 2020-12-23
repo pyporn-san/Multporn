@@ -3,3 +3,4 @@ MPdownloader.egg-info
 .vscode
 Multporn.egg-info
 test.py
+*.pyc
