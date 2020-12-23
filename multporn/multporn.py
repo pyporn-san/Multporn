@@ -166,7 +166,7 @@ class Multporn(RequestHandler):
         Returns the url associated with the comic
         """
         return self.__url
-    
+
     def __str__(self):
         """
         returns the name of the comic
