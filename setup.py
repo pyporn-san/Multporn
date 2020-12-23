@@ -1,13 +1,18 @@
+import re
+
 import setuptools
 
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 with open("requirements.txt", "r", encoding="utf-8") as fh:
     install_requires = fh.read().splitlines()
+with open("multporn/__init__.py", encoding='utf8') as fh:
+    version = re.search(r'__version__ = "(.*?)"', fh.read()).group(1)
+
 print(install_requires)
 setuptools.setup(
     name="Multporn",
-    version="0.0.1",
+    version=version,
     author="pyporn-san",
     author_email="pypornsan@gmail.com",
     description="python library used to interact with multporn.net via python",
