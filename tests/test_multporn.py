@@ -8,7 +8,7 @@ class TestHentai(unittest.TestCase):
     def setUpClass(cls):
         url = "https://multporn.net/comics/between_friends"
         cls.test_response = Multporn(url)
-        with open(f"Between Friends.json", mode='r') as fh:
+        with open("Between Friends.json", mode='r') as fh:
             cls.test_reference = json.load(fh)
 
     @classmethod

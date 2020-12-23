@@ -8,7 +8,7 @@ class TestRequestHandler(unittest.TestCase):
         response = RequestHandler().get(url="https://nhentai.net/api/galleries/all")
         self.assertTrue(response.ok)
         self.assertNotIn('error', response.json())
-        
+
 
 if __name__ == '__main__':
     unittest.main()

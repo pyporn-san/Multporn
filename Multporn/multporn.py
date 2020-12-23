@@ -159,7 +159,7 @@ class Multporn(RequestHandler):
             name = sanitize_filepath(
                 self.__soup.find("meta", attrs={"property": "og:title"})["content"])
         return name
-    
+
     @property
     def url(self):
         """
