@@ -25,7 +25,7 @@ print(comic)
  # ['Best', 'Blowjob', 'Cunnilingus', 'Lolicon', 'Oral sex', 'Stockings', 'Straight', 'Straight Shota', 'Virgin']
 print(comic.tags)
 
-# Downloads the comic to /comic/Between Friends/
+# Downloads the comic to /Comics/Between Friends/
 comic.downloadImages()
 ```
 
