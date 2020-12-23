@@ -2,8 +2,9 @@ import mimetypes
 import os
 from pathlib import Path
 from typing import List, Tuple
-from urllib.parse import urljoin
+from urllib.parse import urljoin, quote
 from urllib.request import getproxies
+from enum import Enum, unique
 
 
 import requests
@@ -113,7 +114,7 @@ class Multporn(RequestHandler):
         self.__response = self.__handler.get(self.__url)
         self.__soup = BeautifulSoup(self.__response.text, "html.parser")
         if(download):
-            self.downlaodImages(self)
+            self.downloadImages(self)
 
     @property
     def imageUrls(self) -> List[str]:
@@ -252,3 +253,57 @@ class Webpage:
             self.__name = sanitize_filepath(
                 self.__soup.find("meta", attrs={"property": "og:title"})["content"])
         return self.__name
+
+
+@unique
+class Sort(Enum):
+    """
+    Known search sort options. Defaults to `Relevant`.
+    """
+    Relevant = "search_api_relevance"
+    Author = "Author"
+
+
+@unique
+class Types(Enum):
+    """
+    Known types of content
+    """
+    All = "All"
+    Comics = "1"
+    HentaiManga = "2"
+    GayComics = "3"
+    CartoonPictures = "4"
+    HentaiPictures = "5"
+    Games = "6"
+    Flash = "7"
+    CartoonVideos = "8"
+    HentaiVideos = "9"
+    GIFAnimations = "10"
+    Rule63 = "11"
+    AuthorsAlbums = "12"
+    Humor = "13"
+    
+
+class Utils(object):
+    """
+    A class used to help with various multporn related tasks
+    """
+
+    @staticmethod
+    def Search(query: str, page: int = 1, queryType: Types = Types.All, sort: Sort = Sort.Relevant, handler=RequestHandler()):
+        """
+        Return a list of `Multporn` objects on page `page` that match this search 
+        `query` sorted by `sort` filter by type with `queryType`
+        """
+        searchHome = urljoin(Multporn.HOME, "/search/")
+        searchUrl = urljoin(
+            searchHome, f"?search_api_views_fulltext={quote(query)}&type={queryType.value}&sort_by={sort.value}&page={page-1}")
+        Response = handler.get(searchUrl)
+        soup = BeautifulSoup(Response.text, "html.parser")
+        try:
+            links = [urljoin(Multporn.HOME, i.a['href']) for i in soup.find(
+                "div", attrs={"class": "view-content"}).find_all("strong")]
+        except AttributeError:
+            return []
+        return [Multporn(link) for link in links]
