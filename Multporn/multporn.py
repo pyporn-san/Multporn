@@ -214,6 +214,10 @@ class Multporn(RequestHandler):
                 text="Characters: ").find_next().contents]
         return Sections
     
+    @property
+    def exists(self):
+        return len(self.imageUrls)>0
+
     def downloadImages(self, output: bool = True, root: Path = Path("Comics/"), printProgress: bool = True):
         """
         Downloads all comic pages that don't already exist in the directory
