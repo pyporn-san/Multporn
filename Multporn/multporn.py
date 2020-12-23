@@ -18,7 +18,8 @@ from urllib3.util.retry import Retry
 
 
 class RequestHandler(object):
-    """RequestHandler
+    """
+    RequestHandler
     ==============
     Defines a synchronous request handler class that provides methods and
     properties for working with REST APIs that is backed by the `requests`
@@ -35,9 +36,7 @@ class RequestHandler(object):
                  total: int = _total,
                  status_forcelist: List[int] = _status_forcelist.copy(),
                  backoff_factor: int = _backoff_factor):
-        """
-        Instantiates a new request handler object.
-        """
+        """Instantiates a new request handler object."""
         self.timeout = timeout
         self.total = total
         self.status_forcelist = status_forcelist
@@ -86,7 +85,8 @@ class RequestHandler(object):
 
 
 class Multporn(RequestHandler):
-    """A <https://multporn.net> comic class
+    """
+    A <https://multporn.net> comic class
 
     Basic Usage
     -----------
