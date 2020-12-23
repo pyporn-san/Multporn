@@ -113,7 +113,7 @@ class Multporn(RequestHandler):
         self.__response = self.__handler.get(self.__url)
         self.__soup = BeautifulSoup(self.__response.text, "html.parser")
         if(download):
-            self.downlaodImages(self)
+            self.downloadImages(self)
 
     @property
     def imageUrls(self) -> List[str]:
