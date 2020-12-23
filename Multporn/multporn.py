@@ -222,7 +222,7 @@ class Webpage:
 
     """
     A Webpage class that bundles together everything related to <https://multporn.net>
-    If you're confused what I mean by "webpage", this is an example(oviously NSFW): <https://multporn.net/category/cosplay>
+    If you're confused what I mean by "webpage", this is an example (oviously NSFW): <https://multporn.net/category/cosplay>
     """
     def __init__(self, url):
         """
@@ -283,7 +283,6 @@ class Types(Enum):
     Rule63 = "11"
     AuthorsAlbums = "12"
     Humor = "13"
-    
 
 class Utils(object):
     """
@@ -293,7 +292,7 @@ class Utils(object):
     @staticmethod
     def Search(query: str, page: int = 1, queryType: Types = Types.All, sort: Sort = Sort.Relevant, handler=RequestHandler()):
         """
-        Return a list of `Multporn` objects on page `page` that match this search 
+        Return a list of `Multporn` objects on page `page` that match this search
         `query` sorted by `sort` filter by type with `queryType`
         """
         searchHome = urljoin(Multporn.HOME, "/search/")
