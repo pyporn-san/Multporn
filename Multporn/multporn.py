@@ -180,6 +180,17 @@ class Multporn(RequestHandler):
         """
         return len(self.imageUrls)
     
+    @property
+    def artists(self):
+        """
+        Return a list of artists
+        only present for comics
+        most likely a single artist but multiple artists are possible that's why the return is a list
+        """
+        artists = [i.next.text for i in self.__soup.find(
+                text="Author: ").find_next().contents]
+        return artists
+    
     def downloadImages(self, output: bool = True, root: Path = Path("Comics/"), printProgress: bool = True):
         """
         Downloads all comic pages that don't already exist in the directory
