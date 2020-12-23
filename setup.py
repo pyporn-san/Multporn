@@ -11,7 +11,7 @@ with open("multporn/__init__.py", encoding='utf8') as fh:
 
 print(install_requires)
 setuptools.setup(
-    name="Multporn",
+    name="multporn",
     version=version,
     author="pyporn-san",
     author_email="pypornsan@gmail.com",

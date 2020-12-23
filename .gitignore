@@ -3,3 +3,5 @@ MPdownloader.egg-info
 .vscode
 Multporn.egg-info
 test.py
+multporn/__pycache__/__init__.cpython-38.pyc
+multporn/__pycache__/multporn.cpython-38.pyc
