@@ -252,3 +252,13 @@ class Webpage:
             self.__name = sanitize_filepath(
                 self.__soup.find("meta", attrs={"property": "og:title"})["content"])
         return self.__name
+
+
+@unique
+class Sort(Enum):
+    """
+    Known search sort options. Defaults to `Relevant`.
+    """
+    Relevant = "search_api_relevance"
+    Author = "Author"
+
