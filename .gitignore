@@ -4,3 +4,5 @@ MPdownloader.egg-info
 Multporn.egg-info
 test.py
 *.pyc
+comics
+Multporn/comics
