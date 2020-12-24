@@ -228,11 +228,12 @@ class Multporn(RequestHandler):
         existingEnd = -1
         root = root.joinpath(self.name)
         root.mkdir(parents=True, exist_ok=True)
+        fileList = os.listdir(root)
         for i in range(self.pageCount):
             fileExists = False
             fileName = f"{self.name}_{str(i).zfill(len(str(self.pageCount-1)))}"
             # Check for existing pictures/pages
-            for file in os.listdir(root):
+            for file in fileList:
                 if(file.startswith(fileName)):
                     if(existingStart == -1):
                         existingStart = i
