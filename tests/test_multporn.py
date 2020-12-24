@@ -10,6 +10,7 @@ class TestHentai(unittest.TestCase):
         cls.test_response = Multporn(url)
         with open("Between Friends.json", mode='r') as fh:
             cls.test_reference = json.load(fh)
+        cls.false_data = Multporn("https://google.com")
 
     @classmethod
     def tearDownClass(cls):
@@ -49,7 +50,7 @@ class TestHentai(unittest.TestCase):
 
     def test_exists(self):
         self.assertTrue(self.test_response.exists, msg=str(self.test_response))
-        self.assertFalse(Multporn("https://google.com").exists,
+        self.assertFalse(self.false_data.exists,
                          msg=f"Should have failed:{'https://google.com'}")
 
 
