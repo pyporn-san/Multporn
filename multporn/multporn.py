@@ -216,7 +216,7 @@ class Multporn(RequestHandler):
 
     @property
     def exists(self):
-        return len(self.imageUrls)>0
+        return self.pageCount>0
 
     def downloadImages(self, output: bool = True, root: Path = Path("Comics/"), printProgress: bool = True):
         """
@@ -228,16 +228,15 @@ class Multporn(RequestHandler):
         existingEnd = -1
         root = root.joinpath(self.name)
         root.mkdir(parents=True, exist_ok=True)
-        for i in range(len(self.imageUrls)):
+        for i in range(self.pageCount):
             fileExists = False
-            fileName = f"{self.name}_{str(i).zfill(len(str(len(self.imageUrls)-1)))}"
+            fileName = f"{self.name}_{str(i).zfill(len(str(self.pageCount-1)))}"
             # Check for existing pictures/pages
             for file in os.listdir(root):
                 if(file.startswith(fileName)):
-                    if existingStart == -1:
-                        existingStart = existingEnd = i
-                    else:
-                        existingEnd = i
+                    if(existingStart == -1):
+                        existingStart = i
+                    existingEnd = i
                     fileExists = True
                     break
             if(not fileExists):
@@ -246,10 +245,10 @@ class Multporn(RequestHandler):
                     if(printProgress):
                         if(existingStart == existingEnd):
                             print(
-                                f'"{self.name}" page {existingStart+1}/{len(self.imageUrls)} exists! skipping')
+                                f'"{self.name}" page {existingStart+1}/{self.pageCount} exists! skipping')
                         else:
                             print(
-                                f'"{self.name}" page {existingStart+1} through {existingEnd+1} out of {len(self.imageUrls)} exists! skipping')
+                                f'"{self.name}" page {existingStart+1} through {existingEnd+1} out of {self.pageCount} exists! skipping')
                     existingStart = existingEnd = -1
                 r = requests.get(
                     self.imageUrls[i], allow_redirects=True)
@@ -258,7 +257,7 @@ class Multporn(RequestHandler):
                 fpath = sanitize_filepath(Path(root, fileName))
                 open(fpath, "wb").write(r.content)
                 if(printProgress):
-                    print(f'"{self.name}" page {i+1}/{len(self.imageUrls)} done')
+                    print(f'"{self.name}" page {i+1}/{self.pageCount} done')
         if(printProgress):
             if(not Updated):
                 print(f'Downlaod "{self.__url}" finished with no updates')
