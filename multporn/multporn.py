@@ -99,8 +99,9 @@ class Multporn(RequestHandler):
 
     def __init__(self, url: str, download: bool = False, timeout: Tuple[float, float] = RequestHandler._timeout,
                  total: int = RequestHandler._total,
-                 status_forcelist: List[int] = RequestHandler._status_forcelist.copy(),
-                 backoff_factor: int = RequestHandler._backoff_factor):
+                 status_forcelist: List[int] = RequestHandler._status_forcelist.copy(
+    ),
+            backoff_factor: int = RequestHandler._backoff_factor):
         """
         Start a request session and load soup from <https://multporn.net> for this link.
         """
@@ -200,7 +201,6 @@ class Multporn(RequestHandler):
 
     @property
     def sections(self):
-
         """
         Returns a list of sections that this comic is present in
         only present for comics
@@ -282,6 +282,7 @@ class Webpage:
     A Webpage class that bundles together everything related to <https://multporn.net>
     If you're confused what I mean by "webpage", this is an example (oviously NSFW): <https://multporn.net/category/cosplay>
     """
+
     def __init__(self, url):
         """
         initializing the webpage object
@@ -341,6 +342,7 @@ class Types(Enum):
     Rule63 = "11"
     AuthorsAlbums = "12"
     Humor = "13"
+
 
 class Utils(object):
     """
