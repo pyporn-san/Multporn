@@ -110,6 +110,7 @@ class Multporn(RequestHandler):
         self.__url = urljoin(self.HOME, url)
         self.__response = self.__handler.get(self.__url)
         self.__soup = BeautifulSoup(self.__response.text, "html.parser")
+        self.__imageUrls = self.__name = self.ongoing = self.__tags = self.__ongoing = self.__sections = None
         if(download):
             self.downloadImages(self)
 
@@ -118,33 +119,37 @@ class Multporn(RequestHandler):
         """
         Return the url of every image in the comic
         """
-        imageUrls = [image.find("img")["src"]
-                     for image in self.__soup.find_all("p", "jb-image")]
-        return imageUrls
+        if(not self.__imageUrls):
+            self.__imageUrls = [image.find("img")["src"]
+                                for image in self.__soup.find_all("p", "jb-image")]
+
+        return self.__imageUrls
 
     @property
     def tags(self) -> List[str]:
         """
         Returns a list of tags empty if non found
         """
-        try:
-            tags = [i.next.text for i in self.__soup.find(
-                text="Tags: ").find_next().contents]
-        except AttributeError:
-            tags = None
-        return tags
+        if(not self.__tags):
+            try:
+                self.__tags = [i.next.text for i in self.__soup.find(
+                    text="Tags: ").find_next().contents]
+            except AttributeError:
+                self.__tags = None
+        return self.__tags
 
     @property
     def ongoing(self) -> bool:
         """
         Returns true if the comic is ongoing
         """
-        try:
-            ongoing = "ongoing" in self.__soup.find(
-                text="Section: ").find_next().text.lower()
-        except AttributeError:
-            ongoing = False
-        return ongoing
+        if(not self.__ongoing):
+            try:
+                self.__ongoing = "ongoing" in self.__soup.find(
+                    text="Section: ").find_next().text.lower()
+            except AttributeError:
+                self.__ongoing = False
+        return self.__ongoing
 
     @property
     def name(self):
@@ -152,13 +157,14 @@ class Multporn(RequestHandler):
         Returns the name of the comic
         Some older comics had the name in a different location
         """
-        try:
-            name = sanitize_filepath(
-                self.__soup.find("meta", attrs={"name": "dcterms.title"})["content"])
-        except TypeError:
-            name = sanitize_filepath(
-                self.__soup.find("meta", attrs={"property": "og:title"})["content"])
-        return name
+        if(not self.__name):
+            try:
+                self.__name = sanitize_filepath(
+                    self.__soup.find("meta", attrs={"name": "dcterms.title"})["content"])
+            except TypeError:
+                self.__name = sanitize_filepath(
+                    self.__soup.find("meta", attrs={"property": "og:title"})["content"])
+        return self.__name
 
     @property
     def url(self):
@@ -187,9 +193,10 @@ class Multporn(RequestHandler):
         only present for comics
         most likely a single artist but multiple artists are possible that's why the return is a list
         """
-        artists = [i.next.text for i in self.__soup.find(
+        if(not self.__artists):
+            self.__artists = [i.next.text for i in self.__soup.find(
                 text="Author: ").find_next().contents]
-        return artists
+        return self.__artists
 
     @property
     def sections(self):
@@ -199,9 +206,10 @@ class Multporn(RequestHandler):
         only present for comics
         most likely a single section but multiple sections are possible that's why the return is a list
         """
-        Sections = [i.next.text for i in self.__soup.find(
+        if(not self.__sections):
+            self.__sections = [i.next.text for i in self.__soup.find(
                 text="Section: ").find_next().contents]
-        return Sections
+        return self.__sections
 
     @property
     def characters(self):
@@ -210,13 +218,14 @@ class Multporn(RequestHandler):
         Only present for comics
         May be empty even for comics
         """
-        Sections = [i.next.text for i in self.__soup.find(
-                text="Characters: ").find_next().contents]
-        return Sections
+        if(not self.__characters)
+        self.__characters = [i.next.text for i in self.__soup.find(
+            text="Characters: ").find_next().contents]
+        return self.__characters
 
     @property
     def exists(self):
-        return self.pageCount>0
+        return self.pageCount > 0
 
     def downloadImages(self, output: bool = True, root: Path = Path("Comics/"), printProgress: bool = True):
         """
