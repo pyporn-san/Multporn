@@ -111,7 +111,7 @@ class Multporn(RequestHandler):
         self.__url = urljoin(self.HOME, url)
         self.__response = self.__handler.get(self.__url)
         self.__soup = BeautifulSoup(self.__response.text, "html.parser")
-        self.__imageUrls = self.__name = self.ongoing = self.__tags = self.__ongoing = self.__sections = None
+        self.__imageUrls = self.__name = self.ongoing = self.__tags = self.__ongoing = self.__sections = self.__characters = self.__artists = None
         if(download):
             self.downloadImages(self)
 
@@ -219,8 +219,8 @@ class Multporn(RequestHandler):
         May be empty even for comics
         """
         if(not self.__characters):
-        self.__characters = [i.next.text for i in self.__soup.find(
-            text="Characters: ").find_next().contents]
+            self.__characters = [i.next.text for i in self.__soup.find(
+                text="Characters: ").find_next().contents]
         return self.__characters
 
     @property
