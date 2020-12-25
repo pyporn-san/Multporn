@@ -156,15 +156,9 @@ class Multporn(RequestHandler):
     def name(self):
         """
         Returns the name of the comic
-        Some older comics had the name in a different location
         """
         if(not self.__name):
-            try:
-                self.__name = sanitize_filepath(
-                    self.__soup.find("meta", attrs={"name": "dcterms.title"})["content"])
-            except TypeError:
-                self.__name = sanitize_filepath(
-                    self.__soup.find("meta", attrs={"property": "og:title"})["content"])
+            self.__name = self.__soup.find("meta", attrs={"name": "dcterms.title"})["content"]
         return self.__name
 
     @property
@@ -289,6 +283,7 @@ class Webpage:
         """
         self.__url = url
         self.__soup = BeautifulSoup(requests.get(url).text, "html.parser")
+        self.__name = None
 
     @property
     def links(self) -> list:
@@ -305,12 +300,8 @@ class Webpage:
         Return the name of this webpage
         usually is a category, character, author, etc
         """
-        try:
-            self.__name = sanitize_filepath(
-                self.__soup.find("meta", attrs={"name": "dcterms.title"})["content"])
-        except TypeError:
-            self.__name = sanitize_filepath(
-                self.__soup.find("meta", attrs={"property": "og:title"})["content"])
+        if(not self.__name):
+            self.__name = self.__soup.find("meta", attrs={"name": "dcterms.title"})["content"]
         return self.__name
 
 
