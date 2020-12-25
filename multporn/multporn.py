@@ -218,7 +218,7 @@ class Multporn(RequestHandler):
         Only present for comics
         May be empty even for comics
         """
-        if(not self.__characters)
+        if(not self.__characters):
         self.__characters = [i.next.text for i in self.__soup.find(
             text="Characters: ").find_next().contents]
         return self.__characters
