@@ -246,16 +246,15 @@ class Multporn(RequestHandler):
                     break
             if(not fileExists):
                 Updated += 1
-                if(existingStart != -1):
-                    if(printProgress):
-                        if(existingStart == existingEnd):
-                            print(
-                                f'"{self.name}" page {existingStart+1}/{self.pageCount} exists! skipping')
-                        else:
-                            print(
-                                f'"{self.name}" page {existingStart+1} through {existingEnd+1} out of {self.pageCount} exists! skipping')
+                if(printProgress and existingStart != -1):
+                    if(existingStart == existingEnd):
+                        print(
+                            f'"{self.name}" page {existingStart+1}/{self.pageCount} exists! skipping')
+                    else:
+                        print(
+                            f'"{self.name}" page {existingStart+1} through {existingEnd+1} out of {self.pageCount} exists! skipping')
                     existingStart = existingEnd = -1
-                r = requests.get(
+                r = self.__handler.get(
                     self.imageUrls[i], allow_redirects=True)
                 fileName = fileName + \
                     mimetypes.guess_extension(r.headers['content-type'])
