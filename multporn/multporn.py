@@ -111,7 +111,7 @@ class Multporn(RequestHandler):
         self.__url = urljoin(self.HOME, url)
         self.__response = self.__handler.get(self.__url)
         self.__soup = BeautifulSoup(self.__response.text, "html.parser")
-        self.__imageUrls = self.__name = self.__tags = self.__ongoing = self.__sections = self.__characters = self.__artists = None
+        self.__imageUrls = self.__name = self.__tags = self.__ongoing = self.__sections = self.__characters = self.__artists = "Unset"
         if(download):
             self.downloadImages(self)
 
@@ -120,7 +120,7 @@ class Multporn(RequestHandler):
         """
         Return the url of every image in the comic
         """
-        if(not self.__imageUrls):
+        if(self.__imageUrls == "Unset"):
             self.__imageUrls = [image.find("img")["src"]
                                 for image in self.__soup.find_all("p", "jb-image")]
 
@@ -131,12 +131,12 @@ class Multporn(RequestHandler):
         """
         Returns a list of tags empty if non found
         """
-        if(not self.__tags):
+        if(self.__tags == "Unset"):
             try:
                 self.__tags = [i.next.text for i in self.__soup.find(
                     text="Tags: ").find_next().contents]
             except AttributeError:
-                self.__tags = None
+                self.__tags = []
         return self.__tags
 
     @property
@@ -144,7 +144,7 @@ class Multporn(RequestHandler):
         """
         Returns true if the comic is ongoing
         """
-        if(not self.__ongoing):
+        if(self.__ongoing == "Unset"):
             try:
                 self.__ongoing = "ongoing" in self.__soup.find(
                     text="Section: ").find_next().text.lower()
@@ -157,7 +157,7 @@ class Multporn(RequestHandler):
         """
         Returns the name of the comic
         """
-        if(not self.__name):
+        if(self.__name == "Unset"):
             self.__name = self.__soup.find("meta", attrs={"name": "dcterms.title"})["content"]
         return self.__name
 
@@ -188,7 +188,7 @@ class Multporn(RequestHandler):
         only present for comics
         most likely a single artist but multiple artists are possible that's why the return is a list
         """
-        if(not self.__artists):
+        if(self.__artists == "Unset"):
             self.__artists = [i.next.text for i in self.__soup.find(
                 text="Author: ").find_next().contents]
         return self.__artists
@@ -200,7 +200,7 @@ class Multporn(RequestHandler):
         only present for comics
         most likely a single section but multiple sections are possible that's why the return is a list
         """
-        if(not self.__sections):
+        if(self.__sections == "Unset"):
             self.__sections = [i.next.text for i in self.__soup.find(
                 text="Section: ").find_next().contents]
         return self.__sections
@@ -212,7 +212,7 @@ class Multporn(RequestHandler):
         Only present for comics
         May be empty even for comics
         """
-        if(not self.__characters):
+        if(self.__characters == "Unset"):
             self.__characters = [i.next.text for i in self.__soup.find(
                 text="Characters: ").find_next().contents]
         return self.__characters
@@ -283,15 +283,16 @@ class Webpage:
         """
         self.__url = url
         self.__soup = BeautifulSoup(requests.get(url).text, "html.parser")
-        self.__name = None
+        self.__name = self.__links = "Unset"
 
     @property
     def links(self) -> list:
         """
         return all links found in this webpage
         """
-        links = [urljoin(Multporn.HOME, i.a['href']) for i in self.__soup.find(
-            "table", "views-view-grid").find_all("strong")]
+        if (links  == "Unset"):
+            links = [urljoin(Multporn.HOME, i.a['href']) for i in self.__soup.find(
+                "table", "views-view-grid").find_all("strong")]
         return links
 
     @property
@@ -300,7 +301,7 @@ class Webpage:
         Return the name of this webpage
         usually is a category, character, author, etc
         """
-        if(not self.__name):
+        if(self.__name == "Unset"):
             self.__name = self.__soup.find("meta", attrs={"name": "dcterms.title"})["content"]
         return self.__name
 
