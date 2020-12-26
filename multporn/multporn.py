@@ -343,7 +343,7 @@ class Utils(object):
     """
 
     @staticmethod
-    def Search(query: str, page: int = 1, queryType: Types = Types.All, sort: Sort = Sort.Relevant, handler=RequestHandler()):
+    def Search(query: str, page: int = 1, queryType: Types = Types.All, sort: Sort = Sort.Relevant, handler=RequestHandler(), returnMultporn: bool = False):
         """
         Return a list of `Multporn` objects on page `page` that match this search
         `query` sorted by `sort` filter by type with `queryType`
@@ -358,4 +358,7 @@ class Utils(object):
                 "div", attrs={"class": "view-content"}).find_all("strong")]
         except AttributeError:
             return []
-        return [Multporn(link) for link in links]
+        if(returnMultporn):
+            return [Multporn(link) for link in links]
+        else:
+            return links
