@@ -111,7 +111,7 @@ class Multporn(RequestHandler):
         self.__url = urljoin(self.HOME, url)
         self.__response = self.__handler.get(self.__url)
         self.__soup = BeautifulSoup(self.__response.text, "html.parser")
-        self.__imageUrls = self.__name = self.ongoing = self.__tags = self.__ongoing = self.__sections = self.__characters = self.__artists = None
+        self.__imageUrls = self.__name = self.__tags = self.__ongoing = self.__sections = self.__characters = self.__artists = None
         if(download):
             self.downloadImages(self)
 
