@@ -122,7 +122,7 @@ class Multporn(RequestHandler):
         return self.name
 
     @property
-    def imageUrls(self) -> List[str]:
+    def imageUrls(self) -> list[str]:
         """
         Return the url of every image in the comic
         """
@@ -133,7 +133,7 @@ class Multporn(RequestHandler):
         return self.__imageUrls
 
     @property
-    def tags(self) -> List[str]:
+    def tags(self) -> list[str]:
         """
         Returns a list of tags empty if non found
         """
@@ -159,7 +159,7 @@ class Multporn(RequestHandler):
         return self.__ongoing
 
     @property
-    def name(self):
+    def name(self) -> str:
         """
         Returns the name of the comic
         """
@@ -169,21 +169,21 @@ class Multporn(RequestHandler):
         return self.__name
 
     @property
-    def url(self):
+    def url(self) -> str:
         """
         Returns the url associated with the comic
         """
         return self.__url
 
     @property
-    def pageCount(self):
+    def pageCount(self) -> int:
         """
         Return the number of pages
         """
         return len(self.imageUrls)
 
     @property
-    def artists(self):
+    def artists(self) -> list[str]:
         """
         Return a list of artists
         only present for comics
@@ -195,7 +195,7 @@ class Multporn(RequestHandler):
         return self.__artists
 
     @property
-    def sections(self):
+    def sections(self) -> list[str]:
         """
         Returns a list of sections that this comic is present in
         only present for comics
@@ -207,7 +207,7 @@ class Multporn(RequestHandler):
         return self.__sections
 
     @property
-    def characters(self):
+    def characters(self) -> list[str]:
         """
         Returns a list of characters listed in the comic
         Only present for comics
@@ -219,7 +219,7 @@ class Multporn(RequestHandler):
         return self.__characters
 
     @property
-    def exists(self):
+    def exists(self) -> bool:
         return self.pageCount > 0
 
     def downloadImages(self, output: bool = True, root: Path = Path("Comics/"), printProgress: bool = True):
@@ -286,7 +286,7 @@ class Webpage:
         self.__name = self.__links = "Unset"
 
     @property
-    def links(self) -> list:
+    def links(self) -> list[str]:
         """
         return all links found in this webpage
         """
