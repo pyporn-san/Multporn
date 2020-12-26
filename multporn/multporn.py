@@ -111,7 +111,7 @@ class Multporn(RequestHandler):
         self.__url = urljoin(self.HOME, url)
         self.__response = self.__handler.get(self.__url)
         self.__soup = BeautifulSoup(self.__response.text, "html.parser")
-        self.__imageUrls = self.__name = self.__tags = self.__ongoing = self.__sections = self.__characters = self.__artists = "Unset"
+        self.__imageUrls = self.__name = self.__tags = self.__ongoing = self.__sections = self.__characters = self.__artists = self.__links = "Unset"
         if(download):
             self.downloadImages(self)
 
@@ -290,10 +290,10 @@ class Webpage:
         """
         return all links found in this webpage
         """
-        if (links == "Unset"):
-            links = [urljoin(Multporn.HOME, i.a['href']) for i in self.__soup.find(
+        if (self.__links == "Unset"):
+            self.__links = [urljoin(Multporn.HOME, i.a['href']) for i in self.__soup.find(
                 "table", "views-view-grid").find_all("strong")]
-        return links
+        return self.__links
 
     @property
     def name(self) -> str:
