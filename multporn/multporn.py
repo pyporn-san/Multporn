@@ -164,7 +164,8 @@ class Multporn(RequestHandler):
         Returns the name of the comic
         """
         if(self.__name == "Unset"):
-            self.__name = self.__soup.find("meta", attrs={"name": "dcterms.title"})["content"]
+            self.__name = self.__soup.find(
+                "meta", attrs={"name": "dcterms.title"})["content"]
         return self.__name
 
     @property
@@ -290,7 +291,7 @@ class Webpage:
         """
         return all links found in this webpage
         """
-        if (links  == "Unset"):
+        if (links == "Unset"):
             links = [urljoin(Multporn.HOME, i.a['href']) for i in self.__soup.find(
                 "table", "views-view-grid").find_all("strong")]
         return links
@@ -302,7 +303,8 @@ class Webpage:
         usually is a category, character, author, etc
         """
         if(self.__name == "Unset"):
-            self.__name = self.__soup.find("meta", attrs={"name": "dcterms.title"})["content"]
+            self.__name = self.__soup.find(
+                "meta", attrs={"name": "dcterms.title"})["content"]
         return self.__name
 
 
