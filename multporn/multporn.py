@@ -122,7 +122,7 @@ class Multporn(RequestHandler):
         return self.name
 
     @property
-    def imageUrls(self) -> list[str]:
+    def imageUrls(self) -> List[str]:
         """
         Return the url of every image in the comic
         """
@@ -133,7 +133,7 @@ class Multporn(RequestHandler):
         return self.__imageUrls
 
     @property
-    def tags(self) -> list[str]:
+    def tags(self) -> List[str]:
         """
         Returns a list of tags empty if non found
         """
@@ -183,7 +183,7 @@ class Multporn(RequestHandler):
         return len(self.imageUrls)
 
     @property
-    def artists(self) -> list[str]:
+    def artists(self) -> List[str]:
         """
         Return a list of artists
         only present for comics
@@ -195,7 +195,7 @@ class Multporn(RequestHandler):
         return self.__artists
 
     @property
-    def sections(self) -> list[str]:
+    def sections(self) -> List[str]:
         """
         Returns a list of sections that this comic is present in
         only present for comics
@@ -207,7 +207,7 @@ class Multporn(RequestHandler):
         return self.__sections
 
     @property
-    def characters(self) -> list[str]:
+    def characters(self) -> List[str]:
         """
         Returns a list of characters listed in the comic
         Only present for comics
@@ -290,7 +290,7 @@ class Webpage:
         self.__name = self.__links = "Unset"
 
     @property
-    def links(self) -> list[str]:
+    def links(self) -> List[str]:
         """
         return all links found in this webpage
         """
