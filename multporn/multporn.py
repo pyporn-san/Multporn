@@ -1,11 +1,10 @@
 import mimetypes
 import os
+from enum import Enum, unique
 from pathlib import Path
 from typing import List, Tuple
-from urllib.parse import urljoin, quote
+from urllib.parse import quote, urljoin
 from urllib.request import getproxies
-from enum import Enum, unique
-
 
 import requests
 from bs4 import BeautifulSoup
