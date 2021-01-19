@@ -233,7 +233,7 @@ class Multporn(RequestHandler):
         Updated = 0
         existingStart = -1
         existingEnd = -1
-        root = root.joinpath(self.name)
+        root = root.joinpath(sanitize_filepath(self.name))
         root.mkdir(parents=True, exist_ok=True)
         fileList = os.listdir(root)
         for i in range(self.pageCount):
