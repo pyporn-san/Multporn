@@ -110,7 +110,7 @@ class Multporn(RequestHandler):
         self.__url = urljoin(self.HOME, url)
         self.__response = self.__handler.get(self.__url)
         self.__soup = BeautifulSoup(self.__response.text, "html.parser")
-        self.__imageUrls = self.__name = self.__tags = self.__ongoing = self.__sections = self.__characters = self.__artists = self.__links = "Unset"
+        self.__imageUrls = self.__sanitized = self.__name = self.__tags = self.__ongoing = self.__sections = self.__characters = self.__artists = self.__links = "Unset"
         if(download):
             self.downloadImages(self)
 
@@ -166,6 +166,15 @@ class Multporn(RequestHandler):
             self.__name = self.__soup.find(
                 "meta", attrs={"name": "dcterms.title"})["content"]
         return self.__name
+
+    @property
+    def sanitizedName(self) -> str:
+        """
+        Return the sanitized name of the comic
+        """
+        if(self.__sanitized == "Unset"):
+            self.__sanitized = sanitize_filepath(self.name)
+        return self.__sanitized
 
     @property
     def url(self) -> str:
