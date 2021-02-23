@@ -266,14 +266,23 @@ class Multporn(RequestHandler):
                         print(
                             f'"{self.name}" page {existingStart+1} through {existingEnd+1} out of {self.pageCount} exists! skipping')
                     existingStart = existingEnd = -1
-                r = self.__handler.get(
-                    self.imageUrls[i], allow_redirects=True)
-                fileName = fileName + \
-                    mimetypes.guess_extension(r.headers['content-type'])
-                fpath = sanitize_filepath(Path(root, fileName))
-                open(fpath, "wb").write(r.content)
-                if(printProgress):
-                    print(f'"{self.name}" page {i+1}/{self.pageCount} done')
+                try:
+                    r = self.__handler.get(
+                        self.imageUrls[i], allow_redirects=True)
+                    fileName = fileName + \
+                        mimetypes.guess_extension(r.headers['content-type'])
+                    fpath = sanitize_filepath(Path(root, fileName))
+                    with open(fpath, "wb") as f:
+                        f.write(r.content)
+                    if(printProgress):
+                        print(f'"{self.name}" page {i+1}/{self.pageCount} done')
+                except Exception as e:
+                    fileName += "_SKIPPED"
+                    fpath = sanitize_filepath(Path(root, fileName))
+                    with open(fpath, "wb") as f:
+                        pass
+                    if(printProgress):
+                        print(f'"{self.name}" page {i+1}/{self.pageCount} skipped becuase {e}')
         if(printProgress):
             if(not Updated):
                 print(f'Downlaod "{self.__url}" finished with no updates')
