@@ -110,7 +110,7 @@ class Multporn(RequestHandler):
         self.__url = urljoin(self.HOME, url)
         self.__response = self.__handler.get(self.__url)
         self.__soup = BeautifulSoup(self.__response.text, "html.parser")
-        self.__imageUrls = self.__sanitized = self.__name = self.__tags = self.__ongoing = self.__sections = self.__characters = self.__artists = self.__links = "Unset"
+        self.__contentUrls = self.__sanitized = self.__name = self.__tags = self.__ongoing = self.__sections = self.__characters = self.__artists = self.__links = self.__contentType = "Unset"
         if(download):
             self.downloadImages(self)
 
@@ -121,15 +121,19 @@ class Multporn(RequestHandler):
         return self.name
 
     @property
-    def imageUrls(self) -> List[str]:
+    def contentUrls(self) -> List[str]:
         """
         Return the url of every image in the comic
+        for videos will return an array with the video file link in the first index
         """
-        if(self.__imageUrls == "Unset"):
-            self.__imageUrls = [image.find("img")["src"]
+        if(self.__contentUrls == "Unset"):
+            if(self.contentType=="video"):
+                self.__contentUrls = [self.__soup.find("video").source["src"]]
+            else:
+                self.__contentUrls = [image.find("img")["src"]
                                 for image in self.__soup.find_all("p", "jb-image")]
 
-        return self.__imageUrls
+        return self.__contentUrls
 
     @property
     def tags(self) -> List[str]:
@@ -188,7 +192,7 @@ class Multporn(RequestHandler):
         """
         Return the number of pages
         """
-        return len(self.imageUrls)
+        return len(self.contentUrls)
 
     @property
     def artists(self) -> List[str]:
@@ -275,7 +279,7 @@ class Multporn(RequestHandler):
                     existingStart = existingEnd = -1
                 try:
                     r = self.__handler.get(
-                        self.imageUrls[i], allow_redirects=True)
+                        self.contentUrls[i], allow_redirects=True)
                     fileName = fileName + \
                         mimetypes.guess_extension(r.headers['content-type'])
                     fpath = sanitize_filepath(Path(root, fileName))
