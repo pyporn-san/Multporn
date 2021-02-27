@@ -231,6 +231,12 @@ class Multporn(RequestHandler):
         return self.pageCount > 0
 
     @property
+    def contentType(self) -> str:
+        if(self.__contentType == "Unset"):
+            self.__contentType = self.url.split("/")[3]
+        return self.__contentType
+
+    @property
     def handler(self) -> RequestHandler:
         return self.__handler
 
