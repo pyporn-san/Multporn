@@ -98,9 +98,7 @@ class Multporn(RequestHandler):
 
     def __init__(self, url: str, download: bool = False, timeout: Tuple[float, float] = RequestHandler._timeout,
                  total: int = RequestHandler._total,
-                 status_forcelist: List[int] = RequestHandler._status_forcelist.copy(
-    ),
-            backoff_factor: int = RequestHandler._backoff_factor):
+                 status_forcelist: List[int] = RequestHandler._status_forcelist.copy(), backoff_factor: int = RequestHandler._backoff_factor):
         """
         Start a request session and load soup from <https://multporn.net> for this link.
         """
@@ -127,11 +125,11 @@ class Multporn(RequestHandler):
         for videos will return an array with the video file link in the first index
         """
         if(self.__contentUrls == "Unset"):
-            if(self.contentType=="video"):
+            if(self.contentType == "video"):
                 self.__contentUrls = [self.__soup.find("video").source["src"]]
             else:
                 self.__contentUrls = [image.find("img")["src"]
-                                for image in self.__soup.find_all("p", "jb-image")]
+                                      for image in self.__soup.find_all("p", "jb-image")]
 
         return self.__contentUrls
 
