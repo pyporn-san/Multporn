@@ -253,52 +253,80 @@ class Multporn(RequestHandler):
         root = root.joinpath(sanitize_filepath(self.sanitizedName))
         root.mkdir(parents=True, exist_ok=True)
         fileList = os.listdir(root)
-        for i in range(self.pageCount):
-            fileExists = False
-            fileName = sanitize_filepath(
-                f"{self.name}_{str(i).zfill(len(str(self.pageCount-1)))}")
-            # Check for existing pictures/pages
+        if(self.contentType == "video"):
+            fileName = sanitize_filepath(self.name)
             for file in fileList:
                 if(file.startswith(fileName)):
-                    if(existingStart == -1):
-                        existingStart = i
-                    existingEnd = i
-                    fileExists = True
+                    if(printProgress):
+                        print(f"{fileName} exists! skipping")
                     break
-            if(not fileExists):
-                Updated += 1
-                if(printProgress and existingStart != -1):
-                    if(existingStart == existingEnd):
-                        print(
-                            f'"{self.name}" page {existingStart+1}/{self.pageCount} exists! skipping')
-                    else:
-                        print(
-                            f'"{self.name}" page {existingStart+1} through {existingEnd+1} out of {self.pageCount} exists! skipping')
-                    existingStart = existingEnd = -1
+            else:
                 try:
                     r = self.__handler.get(
-                        self.contentUrls[i], allow_redirects=True)
+                        self.contentUrls[0], allow_redirects=True)
                     fileName = fileName + \
-                        mimetypes.guess_extension(r.headers['content-type'])
+                        mimetypes.guess_extension(
+                            r.headers['content-type'])
                     fpath = sanitize_filepath(Path(root, fileName))
                     with open(fpath, "wb") as f:
                         f.write(r.content)
                     if(printProgress):
-                        print(f'"{self.name}" page {i+1}/{self.pageCount} done')
+                        print(f'"{self.name}" done')
                 except Exception as e:
                     fileName += "_SKIPPED"
                     fpath = sanitize_filepath(Path(root, fileName))
                     with open(fpath, "wb") as f:
                         pass
                     if(printProgress):
-                        print(
-                            f'"{self.name}" page {i+1}/{self.pageCount} skipped becuase {e}')
-        if(printProgress):
-            if(not Updated):
-                print(f'Downlaod "{self.__url}" finished with no updates')
-            else:
-                print(
-                    f'Download of "{self.__url}" done, {Updated} new pages found')
+                        print(f'"{self.name}" skipped becuase {e}')
+        else:
+            for i in range(self.pageCount):
+                fileExists = False
+                fileName = sanitize_filepath(
+                    f"{self.name}_{str(i).zfill(len(str(self.pageCount-1)))}")
+                for file in fileList:
+                    if(file.startswith(fileName)):
+                        if(existingStart == -1):
+                            existingStart = i
+                        existingEnd = i
+                        fileExists = True
+                        break
+                if(not fileExists):
+                    Updated += 1
+                    if(printProgress and existingStart != -1):
+                        if(existingStart == existingEnd):
+                            print(
+                                f'"{self.name}" page {existingStart+1}/{self.pageCount} exists! skipping')
+                        else:
+                            print(
+                                f'"{self.name}" page {existingStart+1} through {existingEnd+1} out of {self.pageCount} exists! skipping')
+                        existingStart = existingEnd = -1
+                    try:
+                        r = self.__handler.get(
+                            self.contentUrls[i], allow_redirects=True)
+                        fileName = fileName + \
+                            mimetypes.guess_extension(
+                                r.headers['content-type'])
+                        fpath = sanitize_filepath(Path(root, fileName))
+                        with open(fpath, "wb") as f:
+                            f.write(r.content)
+                        if(printProgress):
+                            print(
+                                f'"{self.name}" page {i+1}/{self.pageCount} done')
+                    except Exception as e:
+                        fileName += "_SKIPPED"
+                        fpath = sanitize_filepath(Path(root, fileName))
+                        with open(fpath, "wb") as f:
+                            pass
+                        if(printProgress):
+                            print(
+                                f'"{self.name}" page {i+1}/{self.pageCount} skipped becuase {e}')
+            if(printProgress):
+                if(not Updated):
+                    print(f'Downlaod "{self.__url}" finished with no updates')
+                else:
+                    print(
+                        f'Download of "{self.__url}" done, {Updated} new pages found')
 
 
 class Webpage:
