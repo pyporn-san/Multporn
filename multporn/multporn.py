@@ -112,7 +112,7 @@ class Multporn(RequestHandler):
         self.__soup = BeautifulSoup(self.__response.text, "html.parser")
         self.__contentUrls = self.__sanitized = self.__name = self.__tags = self.__ongoing = self.__sections = self.__characters = self.__artists = self.__links = self.__contentType = "Unset"
         if(download):
-            self.downloadImages(self)
+            self.downloadContent(self)
 
     def __str__(self):
         """
@@ -244,7 +244,7 @@ class Multporn(RequestHandler):
     def handler(self) -> RequestHandler:
         return self.__handler
 
-    def downloadImages(self, output: bool = True, root: Path = Path("Comics/"), printProgress: bool = True):
+    def downloadContent(self, output: bool = True, root: Path = Path("Comics/"), printProgress: bool = True):
         """
         Downloads all comic pages that don't already exist in the directory
         logging can be disabled by passing false to printProgress
