@@ -247,7 +247,8 @@ class Multporn(RequestHandler):
         fileList = os.listdir(root)
         for i in range(self.pageCount):
             fileExists = False
-            fileName = sanitize_filepath(f"{self.name}_{str(i).zfill(len(str(self.pageCount-1)))}")
+            fileName = sanitize_filepath(
+                f"{self.name}_{str(i).zfill(len(str(self.pageCount-1)))}")
             # Check for existing pictures/pages
             for file in fileList:
                 if(file.startswith(fileName)):
@@ -282,7 +283,8 @@ class Multporn(RequestHandler):
                     with open(fpath, "wb") as f:
                         pass
                     if(printProgress):
-                        print(f'"{self.name}" page {i+1}/{self.pageCount} skipped becuase {e}')
+                        print(
+                            f'"{self.name}" page {i+1}/{self.pageCount} skipped becuase {e}')
         if(printProgress):
             if(not Updated):
                 print(f'Downlaod "{self.__url}" finished with no updates')
