@@ -250,6 +250,9 @@ class Multporn(RequestHandler):
         Updated = 0
         existingStart = -1
         existingEnd = -1
+        paths=[]
+        if(isinstance(root,str)):
+            root=Path(root)
         root = root.joinpath(sanitize_filepath(self.sanitizedName))
         root.mkdir(parents=True, exist_ok=True)
         fileList = os.listdir(root)
