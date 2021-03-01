@@ -94,7 +94,7 @@ class Multporn(RequestHandler):
         >>> print(comic)
         'Between Friends'
     """
-    HOME = "http://multporn.net/"
+    HOME = "https://multporn.net/"
 
     def __init__(self, url: str, download: bool = False, timeout: Tuple[float, float] = RequestHandler._timeout,
                  total: int = RequestHandler._total,
@@ -418,7 +418,8 @@ class Utils(object):
         """
         searchHome = urljoin(Multporn.HOME, "/search/")
         searchUrl = urljoin(
-            searchHome, f"?search_api_views_fulltext={quote(query)}&type={queryType.value}&sort_by={sort.value}&page={page-1}")
+            searchHome, f"?views_fulltext={quote(query)}&type={queryType.value}&sort_by={sort.value}&page={page-1}")
+        print(searchUrl)
         Response = handler.get(searchUrl)
         soup = BeautifulSoup(Response.text, "html.parser")
         try:
