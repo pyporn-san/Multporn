@@ -262,6 +262,7 @@ class Multporn(RequestHandler):
                 if(file.startswith(fileName)):
                     if(printProgress):
                         print(f"{fileName} exists! skipping")
+                    paths.append(Path(root,file))
                     break
             else:
                 try:
@@ -271,10 +272,12 @@ class Multporn(RequestHandler):
                         mimetypes.guess_extension(
                             r.headers['content-type'])
                     fpath = sanitize_filepath(Path(root, fileName))
+                    # The final filepath is root/comic.sanitizedName/comic.sanitizedName.(guessed extension)
                     with open(fpath, "wb") as f:
                         f.write(r.content)
                     if(printProgress):
                         print(f'"{self.name}" done')
+                    paths.append(fpath)
                 except Exception as e:
                     fileName += "_SKIPPED"
                     fpath = sanitize_filepath(Path(root, fileName))
@@ -282,9 +285,9 @@ class Multporn(RequestHandler):
                         pass
                     if(printProgress):
                         print(f'"{self.name}" skipped becuase {e}')
+                    paths.append(fpath)
         else:
             for i in range(self.pageCount):
-                fileExists = False
                 fileName = sanitize_filepath(
                     f"{self.name}_{str(i).zfill(len(str(self.pageCount-1)))}")
                 for file in fileList:
@@ -292,9 +295,9 @@ class Multporn(RequestHandler):
                         if(existingStart == -1):
                             existingStart = i
                         existingEnd = i
-                        fileExists = True
+                        paths.append(Path(root,file))
                         break
-                if(not fileExists):
+                else:
                     Updated += 1
                     if(printProgress and existingStart != -1):
                         if(existingStart == existingEnd):
@@ -316,6 +319,7 @@ class Multporn(RequestHandler):
                         if(printProgress):
                             print(
                                 f'"{self.name}" page {i+1}/{self.pageCount} done')
+                        paths.append(fpath)
                     except Exception as e:
                         fileName += "_SKIPPED"
                         fpath = sanitize_filepath(Path(root, fileName))
@@ -324,12 +328,14 @@ class Multporn(RequestHandler):
                         if(printProgress):
                             print(
                                 f'"{self.name}" page {i+1}/{self.pageCount} skipped becuase {e}')
+                        paths.append(fpath)
             if(printProgress):
                 if(not Updated):
                     print(f'Downlaod "{self.__url}" finished with no updates')
                 else:
                     print(
                         f'Download of "{self.__url}" done, {Updated} new pages found')
+        return paths
 
 
 class Webpage:
