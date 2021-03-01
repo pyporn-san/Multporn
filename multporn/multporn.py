@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import List, Tuple
 from urllib.parse import quote, urljoin
 from urllib.request import getproxies
+from functools import cached_property
 
 import requests
 from bs4 import BeautifulSoup
@@ -108,7 +109,6 @@ class Multporn(RequestHandler):
         self.__url = urljoin(self.HOME, url)
         self.__response = self.__handler.get(self.__url)
         self.__soup = BeautifulSoup(self.__response.text, "html.parser")
-        self.__contentUrls = self.__sanitized = self.__name = self.__tags = self.__ongoing = self.__sections = self.__characters = self.__artists = self.__links = self.__contentType = "Unset"
         if(download):
             self.downloadContent()
 
@@ -118,127 +118,101 @@ class Multporn(RequestHandler):
         """
         return self.name
 
-    @property
+    @cached_property
     def contentUrls(self) -> List[str]:
         """
         Return the url of every image in the comic
         for videos will return an array with the video file link in the first index
         """
-        if(self.__contentUrls == "Unset"):
-            if(self.contentType == "video"):
-                self.__contentUrls = [self.__soup.find("video").source["src"]]
-            else:
-                self.__contentUrls = [image.find("img")["src"]
-                                      for image in self.__soup.find_all("p", "jb-image")]
+        if(self.contentType == "video"):
+            return [self.__soup.find("video").source["src"]]
+        else:
+            return [image.find("img")["src"] for image in self.__soup.find_all("p", "jb-image")]
 
-        return self.__contentUrls
-
-    @property
+    @cached_property
     def tags(self) -> List[str]:
         """
         Returns a list of tags empty if non found
         """
-        if(self.__tags == "Unset"):
-            try:
-                self.__tags = [i.next.text for i in self.__soup.find(
-                    text="Tags: ").find_next().contents]
-            except AttributeError:
-                self.__tags = []
-        return self.__tags
+        try:
+            return [i.next.text for i in self.__soup.find(text="Tags: ").find_next().contents]
+        except AttributeError:
+            return []
 
-    @property
+    @cached_property
     def ongoing(self) -> bool:
         """
         Returns true if the comic is ongoing
         """
-        if(self.__ongoing == "Unset"):
-            try:
-                self.__ongoing = "ongoing" in self.__soup.find(
-                    text="Section: ").find_next().text.lower()
-            except AttributeError:
-                self.__ongoing = False
-        return self.__ongoing
+        try:
+            return "ongoing" in self.__soup.find(text="Section: ").find_next().text.lower()
+        except AttributeError:
+            return False
 
-    @property
+    @cached_property
     def name(self) -> str:
         """
         Returns the name of the comic
         """
-        if(self.__name == "Unset"):
-            self.__name = self.__soup.find(
-                "meta", attrs={"name": "dcterms.title"})["content"]
-        return self.__name
+        return self.__soup.find("meta", attrs={"name": "dcterms.title"})["content"]
 
-    @property
+    @cached_property
     def sanitizedName(self) -> str:
         """
         Return the sanitized name of the comic
         """
-        if(self.__sanitized == "Unset"):
-            self.__sanitized = sanitize_filepath(self.name)
-        return self.__sanitized
+        return sanitize_filepath(self.name)
 
-    @property
+    @cached_property
     def url(self) -> str:
         """
         Returns the url associated with the comic
         """
         return self.__url
 
-    @property
+    @cached_property
     def pageCount(self) -> int:
         """
         Return the number of pages
         """
         return len(self.contentUrls)
 
-    @property
+    @cached_property
     def artists(self) -> List[str]:
         """
         Return a list of artists
         only present for comics
         most likely a single artist but multiple artists are possible that's why the return is a list
         """
-        if(self.__artists == "Unset"):
-            self.__artists = [i.next.text for i in self.__soup.find(
-                text="Author: ").find_next().contents]
-        return self.__artists
+        return [i.next.text for i in self.__soup.find(text="Author: ").find_next().contents]
 
-    @property
+    @cached_property
     def sections(self) -> List[str]:
         """
         Returns a list of sections that this comic is present in
         only present for comics
         most likely a single section but multiple sections are possible that's why the return is a list
         """
-        if(self.__sections == "Unset"):
-            self.__sections = [i.next.text for i in self.__soup.find(
-                text="Section: ").find_next().contents]
-        return self.__sections
+        return [i.next.text for i in self.__soup.find(text="Section: ").find_next().contents]
 
-    @property
+    @cached_property
     def characters(self) -> List[str]:
         """
         Returns a list of characters listed in the comic
         Only present for comics
         May be empty even for comics
         """
-        if(self.__characters == "Unset"):
-            self.__characters = [i.next.text for i in self.__soup.find(
-                text="Characters: ").find_next().contents]
-        return self.__characters
+        return [i.next.text for i in self.__soup.find(text="Characters: ").find_next().contents]
 
-    @property
+    @cached_property
     def exists(self) -> bool:
         return self.pageCount > 0
 
-    @property
+    @cached_property
     def contentType(self) -> str:
-        if(self.__contentType == "Unset"):
-            self.__contentType = self.url.split("/")[3]
-        return self.__contentType
+        return self.url.split("/")[3]
 
-    @property
+    @cached_property
     def handler(self) -> RequestHandler:
         return self.__handler
 
