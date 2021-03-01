@@ -224,9 +224,9 @@ class Multporn(RequestHandler):
         Updated = 0
         existingStart = -1
         existingEnd = -1
-        paths=[]
-        if(isinstance(root,str)):
-            root=Path(root)
+        paths = []
+        if(isinstance(root, str)):
+            root = Path(root)
         root = root.joinpath(sanitize_filepath(self.sanitizedName))
         root.mkdir(parents=True, exist_ok=True)
         fileList = os.listdir(root)
@@ -236,7 +236,7 @@ class Multporn(RequestHandler):
                 if(file.startswith(fileName)):
                     if(printProgress):
                         print(f"{fileName} exists! skipping")
-                    paths.append(Path(root,file))
+                    paths.append(Path(root, file))
                     break
             else:
                 try:
@@ -269,7 +269,7 @@ class Multporn(RequestHandler):
                         if(existingStart == -1):
                             existingStart = i
                         existingEnd = i
-                        paths.append(Path(root,file))
+                        paths.append(Path(root, file))
                         break
                 else:
                     Updated += 1
@@ -393,7 +393,6 @@ class Utils(object):
         searchHome = urljoin(Multporn.HOME, "/search/")
         searchUrl = urljoin(
             searchHome, f"?views_fulltext={quote(query)}&type={queryType.value}&sort_by={sort.value}&page={page-1}")
-        print(searchUrl)
         Response = handler.get(searchUrl)
         soup = BeautifulSoup(Response.text, "html.parser")
         try:
