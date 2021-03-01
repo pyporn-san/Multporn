@@ -1,9 +1,7 @@
 dist
-MPdownloader.egg-info
 .vscode
-Multporn.egg-info
+*.egg-info
 test.py
 *.pyc
-comics
-Multporn/comics
-test.py
+Albums
+Multporn/Albums
