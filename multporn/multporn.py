@@ -206,14 +206,23 @@ class Multporn(RequestHandler):
 
     @cached_property
     def exists(self) -> bool:
+        """
+        Returns the existence status of the comic
+        """
         return self.pageCount > 0
 
     @cached_property
     def contentType(self) -> str:
+        """
+        Returns the content type of the comic as a string
+        """
         return self.url.split("/")[3]
 
     @cached_property
     def handler(self) -> RequestHandler:
+        """
+        Returns the handler of the Multporn object
+        """
         return self.__handler
 
     def downloadContent(self, root: Path = Path("Albums"), printProgress: bool = True):
