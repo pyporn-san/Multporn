@@ -239,27 +239,41 @@ class Multporn(RequestHandler):
         root = root.joinpath(sanitize_filepath(self.sanitizedName))
         root.mkdir(parents=True, exist_ok=True)
         fileList = os.listdir(root)
-        if(self.contentType == "video"):
-            fileName = sanitize_filepath(self.name)
+        for i in range(self.pageCount):
+            if(self.contentType == "video"):
+                fileName = self.sanitizedName
+                printName = fileName
+            else:
+                fileName = f"{self.sanitizedName}_{str(i).zfill(len(str(self.pageCount-1)))}"
+                printName = f'"{self.name}" page {i+1}/{self.pageCount}'
             for file in fileList:
                 if(file.startswith(fileName)):
-                    if(printProgress):
-                        print(f"{fileName} exists! skipping")
+                    if(existingStart == -1):
+                        existingStart = i
+                    existingEnd = i
                     paths.append(Path(root, file))
                     break
             else:
+                Updated += 1
+                if(printProgress and existingStart != -1):
+                    if(existingStart == existingEnd):
+                        print(
+                            f'"{self.name}" page {existingStart+1}/{self.pageCount} exists! skipping')
+                    else:
+                        print(
+                            f'"{self.name}" page {existingStart+1} through {existingEnd+1} out of {self.pageCount} exists! skipping')
+                    existingStart = existingEnd = -1
                 try:
                     r = self.__handler.get(
-                        self.contentUrls[0], allow_redirects=True)
+                        self.contentUrls[i], allow_redirects=True)
                     fileName = fileName + \
                         mimetypes.guess_extension(
                             r.headers['content-type'])
                     fpath = sanitize_filepath(Path(root, fileName))
-                    # The final filepath is root/comic.sanitizedName/comic.sanitizedName.(guessed extension)
                     with open(fpath, "wb") as f:
                         f.write(r.content)
                     if(printProgress):
-                        print(f'"{self.name}" done')
+                        print(f'{printName} done')
                     paths.append(fpath)
                 except Exception as e:
                     fileName += "_SKIPPED"
@@ -267,57 +281,14 @@ class Multporn(RequestHandler):
                     with open(fpath, "wb") as f:
                         pass
                     if(printProgress):
-                        print(f'"{self.name}" skipped becuase {e}')
+                        print(f'{printName} skipped becuase {e}')
                     paths.append(fpath)
-        else:
-            for i in range(self.pageCount):
-                fileName = sanitize_filepath(
-                    f"{self.name}_{str(i).zfill(len(str(self.pageCount-1)))}")
-                for file in fileList:
-                    if(file.startswith(fileName)):
-                        if(existingStart == -1):
-                            existingStart = i
-                        existingEnd = i
-                        paths.append(Path(root, file))
-                        break
-                else:
-                    Updated += 1
-                    if(printProgress and existingStart != -1):
-                        if(existingStart == existingEnd):
-                            print(
-                                f'"{self.name}" page {existingStart+1}/{self.pageCount} exists! skipping')
-                        else:
-                            print(
-                                f'"{self.name}" page {existingStart+1} through {existingEnd+1} out of {self.pageCount} exists! skipping')
-                        existingStart = existingEnd = -1
-                    try:
-                        r = self.__handler.get(
-                            self.contentUrls[i], allow_redirects=True)
-                        fileName = fileName + \
-                            mimetypes.guess_extension(
-                                r.headers['content-type'])
-                        fpath = sanitize_filepath(Path(root, fileName))
-                        with open(fpath, "wb") as f:
-                            f.write(r.content)
-                        if(printProgress):
-                            print(
-                                f'"{self.name}" page {i+1}/{self.pageCount} done')
-                        paths.append(fpath)
-                    except Exception as e:
-                        fileName += "_SKIPPED"
-                        fpath = sanitize_filepath(Path(root, fileName))
-                        with open(fpath, "wb") as f:
-                            pass
-                        if(printProgress):
-                            print(
-                                f'"{self.name}" page {i+1}/{self.pageCount} skipped becuase {e}')
-                        paths.append(fpath)
-            if(printProgress):
-                if(not Updated):
-                    print(f'Downlaod "{self.__url}" finished with no updates')
-                else:
-                    print(
-                        f'Download of "{self.__url}" done, {Updated} new pages found')
+        if(printProgress):
+            if(not Updated):
+                print(f'Downlaod "{self.__url}" finished with no updates')
+            else:
+                print(
+                    f'Download of "{self.__url}" done, {Updated} new items found')
         return paths
 
 
