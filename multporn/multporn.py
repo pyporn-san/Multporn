@@ -365,22 +365,34 @@ class Utils(object):
     """
 
     @staticmethod
-    def Search(query: str, page: int = 1, queryType: Types = Types.All, sort: Sort = Sort.Relevant, handler=RequestHandler(), returnMultporn: bool = False):
+    def Search(query: str, page: int = 1, queryType: Types = Types.All, sort: Sort = Sort.Relevant, handler=RequestHandler()):
         """
-        Return a list of `Multporn` objects on page `page` that match this search
-        `query` sorted by `sort` filter by type with `queryType`
+        Return a dict with 2 keys link, thumb and name
+        searches on page `page` that match this search `query` sorted by `sort`
+        filter by type with `queryType`
         """
         searchHome = urljoin(Multporn.HOME, "/search/")
         searchUrl = urljoin(
             searchHome, f"?views_fulltext={quote(query)}&type={queryType.value}&sort_by={sort.value}&page={page-1}")
         Response = handler.get(searchUrl)
         soup = BeautifulSoup(Response.text, "html.parser")
+        # links
         try:
             links = [urljoin(Multporn.HOME, i.a['href']) for i in soup.find(
                 "div", attrs={"class": "view-content"}).find_all("strong")]
         except AttributeError:
             return []
-        if(returnMultporn):
-            return [Multporn(link) for link in links]
-        else:
-            return links
+        # thumbs
+        try:
+            thumbs = [i['src'] for i in soup.find(
+                "div", attrs={"class": "view-content"}).find_all("img")]
+        except:
+            thumbs = [i['data-cfsrc'] for i in soup.find(
+                "div", attrs={"class": "view-content"}).find_all("img")]
+        # names
+        names = [i.string for i in soup.find(
+            "div", attrs={"class": "view-content"}).find_all("strong")]
+        r = []
+        for i in range(len(links)):
+            r.append({"link": links[i], "thumb": thumbs[i], "name": names[i]})
+        return r
