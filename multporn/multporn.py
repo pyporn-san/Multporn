@@ -171,6 +171,16 @@ class Multporn(RequestHandler):
         return self.__url
 
     @cached_property
+    def thumbnail(self) -> str:
+        if(self.contentType == "video"):
+            return self.__soup.find("video")["poster"]
+        else:
+            try:
+                return self.contentUrls[0]
+            except:
+                return
+
+    @cached_property
     def pageCount(self) -> int:
         """
         Return the number of pages
