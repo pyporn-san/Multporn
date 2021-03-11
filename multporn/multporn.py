@@ -393,12 +393,13 @@ class Utils(object):
         except AttributeError:
             return []
         # thumbs
+        thumbs = soup.find(
+            "div", attrs={"class": "view-content"}).find_all("img")
         try:
-            thumbs = [i['src'] for i in soup.find(
-                "div", attrs={"class": "view-content"}).find_all("img")]
+            thumbs = [i['src'] for i in thumbs]
         except:
-            thumbs = [i['data-cfsrc'] for i in soup.find(
-                "div", attrs={"class": "view-content"}).find_all("img")]
+            thumbs = thumbs[1::2]
+            thumbs = [i['src'] for i in thumbs]
         # names
         names = [i.string for i in soup.find(
             "div", attrs={"class": "view-content"}).find_all("strong")]
