@@ -227,7 +227,10 @@ class Multporn(RequestHandler):
         """
         Returns the existence status of the Multporn object
         """
-        return self.pageCount > 0
+        try:
+            return self.pageCount > 0
+        except:
+            return False
 
     @cached_property
     def contentType(self) -> str:
