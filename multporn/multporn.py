@@ -14,6 +14,7 @@ from pathvalidate import sanitize_filepath
 from requests import Session
 from requests.adapters import HTTPAdapter
 from requests.models import Response
+from tqdm import tqdm, trange
 from urllib3.util.retry import Retry
 
 
@@ -260,7 +261,11 @@ class Multporn(RequestHandler):
         root = root.joinpath(sanitize_filepath(self.sanitizedName))
         root.mkdir(parents=True, exist_ok=True)
         fileList = os.listdir(root)
-        for i in range(self.pageCount):
+        if(printProgress):
+            tq = trange(self.pageCount)
+        else:
+            tq = range(self.pageCount)
+        for i in tq:
             if(self.contentType == "video"):
                 fileName = self.sanitizedName
                 printName = fileName
@@ -278,11 +283,11 @@ class Multporn(RequestHandler):
                 Updated += 1
                 if(printProgress and existingStart != -1):
                     if(existingStart == existingEnd):
-                        print(
-                            f'"{self.name}" page {existingStart+1}/{self.pageCount} exists! skipping')
+                        tq.set_description(
+                            f'"{self.name}" page {existingStart+1}/{self.pageCount} exists! skipping', refresh=True)
                     else:
-                        print(
-                            f'"{self.name}" page {existingStart+1} through {existingEnd+1} out of {self.pageCount} exists! skipping')
+                        tq.set_description(
+                            f'"{self.name}" page {existingStart+1} through {existingEnd+1} out of {self.pageCount} exists! skipping', refresh=True)
                     existingStart = existingEnd = -1
                 try:
                     r = self.__handler.get(
@@ -294,7 +299,7 @@ class Multporn(RequestHandler):
                     with open(fpath, "wb") as f:
                         f.write(r.content)
                     if(printProgress):
-                        print(f'{printName} done')
+                        tq.set_description(f'{printName} done')
                     paths.append(fpath)
                 except Exception as e:
                     fileName += "_SKIPPED"
@@ -302,14 +307,16 @@ class Multporn(RequestHandler):
                     with open(fpath, "wb") as f:
                         pass
                     if(printProgress):
-                        print(f'{printName} skipped becuase {e}')
+                        tq.set_description(
+                            f'{printName} skipped becuase {e}', refresh=True)
                     paths.append(fpath)
         if(printProgress):
             if(not Updated):
-                print(f'Downlaod "{self.__url}" finished with no updates')
+                tq.set_description(
+                    f'Downlaod "{self.__url}" finished with no updates', refresh=True)
             else:
-                print(
-                    f'Download of "{self.__url}" done, {Updated} new items found')
+                tq.set_description(
+                    f'Download of "{self.__url}" done, {Updated} new items found', refresh=True)
         return paths
 
 
