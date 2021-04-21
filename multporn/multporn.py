@@ -43,7 +43,7 @@ class RequestHandler(object):
         self.status_forcelist = status_forcelist
         self.backoff_factor = backoff_factor
 
-    @property
+    @cached_property
     def retry_strategy(self) -> Retry:
         """
         The retry strategy returns the retry configuration made up of the
@@ -56,7 +56,7 @@ class RequestHandler(object):
                      backoff_factor=self.backoff_factor
                      )
 
-    @property
+    @cached_property
     def session(self) -> Session:
         """
         Creates a custom session object. A request session provides cookie
@@ -335,7 +335,7 @@ class Webpage:
         self.__soup = BeautifulSoup(requests.get(url).text, "html.parser")
         self.__name = self.__links = "Unset"
 
-    @property
+    @cached_property
     def links(self) -> List[str]:
         """
         return all links found in this webpage
@@ -345,7 +345,7 @@ class Webpage:
                 "table", "views-view-grid").find_all("strong")]
         return self.__links
 
-    @property
+    @cached_property
     def name(self) -> str:
         """
         Return the name of this webpage
