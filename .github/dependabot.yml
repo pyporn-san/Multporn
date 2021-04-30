@@ -1,0 +1,18 @@
+version: 2
+updates:
+- package-ecosystem: pip
+  directory: "/"
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: pathvalidate
+    versions:
+    - 2.4.1
+  - dependency-name: faker
+    versions:
+    - 6.5.2
+    - 7.0.1
+  - dependency-name: urllib3
+    versions:
+    - 1.26.4
