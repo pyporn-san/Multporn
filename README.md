@@ -26,7 +26,7 @@ print(comic)
 print(comic.tags)
 
 # Downloads the comic to /Comics/Between Friends/
-comic.downloadImages()
+comic.downloadContent()
 ```
 
 Also see [Multporn-cli](https://github.com/pyporn-san/Multporn-CLI/) as an implementation example
