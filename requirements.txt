@@ -3,3 +3,4 @@ urllib3==1.26.4
 requests==2.25.1
 beautifulsoup4==4.9.3
 Faker==8.2.1
+tqdm==4.58.0
