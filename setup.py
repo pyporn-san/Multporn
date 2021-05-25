@@ -1,4 +1,5 @@
-import re
+import re 
+import os
 
 import setuptools
 
@@ -8,6 +9,9 @@ with open("requirements.txt", "r", encoding="utf-8") as fh:
     install_requires = fh.read().splitlines()
 with open("multporn/__init__.py", encoding='utf8') as fh:
     version = re.search(r'__version__ = "(.*?)"', fh.read()).group(1)
+
+if not os.getenv('READTHEDOCS'):
+    install_requires.append('python-snappy')
 
 print(install_requires)
 setuptools.setup(
@@ -31,5 +35,5 @@ setuptools.setup(
         "Topic :: Software Development :: Libraries",
         "Topic :: Utilities"
     ],
-    python_requires='>=3.6',
+    python_requires='>=3.8',
 )
