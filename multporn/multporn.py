@@ -20,8 +20,6 @@ from urllib3.util.retry import Retry
 
 class RequestHandler(object):
     """
-    RequestHandler
-    ==============
     Defines a synchronous request handler class that provides methods and
     properties for working with REST APIs that is backed by the `requests`
     library.
@@ -87,10 +85,9 @@ class RequestHandler(object):
 
 class Multporn(RequestHandler):
     """
-    A <https://multporn.net> comic class
+    A `multporn <https://multporn.net>`__ comic class
 
-    Basic Usage
-    -----------
+    Basic Usage:
         >>> from multporn import Multporn
         >>> comic = Multporn("https://multporn.net/comics/between_friends")
         >>> print(comic)
