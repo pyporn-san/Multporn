@@ -4,6 +4,8 @@
 
 multporn is a Python library used to interact with [multporn.net (NSFW)](https://multporn.net/) via python.
 
+[Documentation](https://multporn.readthedocs.io/en/latest/)
+
 ## Installation
 
 Use the package manager [pip](https://pip.pypa.io/en/stable/) to install the latest release of multporn.
