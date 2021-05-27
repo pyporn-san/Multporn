@@ -2,7 +2,7 @@
 Installation
 ============
 
-Install using pip:
+You can install the library using `pip <https://pypi.org/project/pip/>`_
 
 .. code-block:: bash
 

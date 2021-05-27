@@ -5,8 +5,9 @@ Welcome to Multporn's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-   install
-   multporn
+   multporn/classes
+   installation
+   examples
 
 Indices and tables
 ==================
