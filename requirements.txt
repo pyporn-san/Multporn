@@ -2,5 +2,5 @@ pathvalidate==2.4.1
 urllib3==1.26.5
 requests==2.25.1
 beautifulsoup4==4.9.3
-Faker==8.5.0
+Faker==8.5.1
 tqdm==4.61.0
