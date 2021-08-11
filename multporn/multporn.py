@@ -1,9 +1,8 @@
 import mimetypes
-import os
 from enum import Enum, unique
 from functools import cached_property
 from pathlib import Path
-from typing import List, Tuple
+from typing import List, Tuple, Union
 from urllib.parse import quote, urljoin
 from urllib.request import getproxies
 
@@ -244,76 +243,61 @@ class Multporn(RequestHandler):
         """
         return self.__handler
 
-    def downloadContent(self, root: Path = Path("Albums"), printProgress: bool = True):
+    def downloadContent(self, root: Union[Path, str] = Path("Albums"), printProgress: bool = True):
         """
         Downloads all comic pages that don't already exist in the directory
         Logging can be disabled by passing false to printProgress
         """
-        Updated = 0
-        existingStart = -1
-        existingEnd = -1
         paths = []
         if(isinstance(root, str)):
             root = Path(root)
         root = root.joinpath(sanitize_filepath(self.sanitizedName))
         root.mkdir(parents=True, exist_ok=True)
-        fileList = os.listdir(root)
-        if(printProgress):
-            tq = trange(self.pageCount)
-        else:
-            tq = range(self.pageCount)
-        for i in tq:
-            if(self.contentType == "video"):
-                fileName = self.sanitizedName
-                printName = fileName
-            else:
-                fileName = f"{self.sanitizedName}_{str(i).zfill(len(str(self.pageCount-1)))}"
-                printName = f'"{self.name}" page {i+1}/{self.pageCount}'
-            for file in fileList:
-                if(file.startswith(fileName)):
-                    if(existingStart == -1):
-                        existingStart = i
-                    existingEnd = i
-                    paths.append(Path(root, file))
-                    break
-            else:
-                Updated += 1
-                if(printProgress and existingStart != -1):
-                    if(existingStart == existingEnd):
-                        tq.set_description(
-                            f'"{self.name}" page {existingStart+1}/{self.pageCount} exists! skipping', refresh=True)
-                    else:
-                        tq.set_description(
-                            f'"{self.name}" page {existingStart+1} through {existingEnd+1} out of {self.pageCount} exists! skipping', refresh=True)
-                    existingStart = existingEnd = -1
-                try:
-                    r = self.__handler.get(
-                        self.contentUrls[i], allow_redirects=True)
-                    fileName = fileName + \
-                        mimetypes.guess_extension(
-                            r.headers['content-type'])
-                    fpath = sanitize_filepath(Path(root, fileName))
-                    with open(fpath, "wb") as f:
-                        f.write(r.content)
-                    if(printProgress):
-                        tq.set_description(f'{printName} done')
-                    paths.append(fpath)
-                except Exception as e:
-                    fileName += "_SKIPPED"
-                    fpath = sanitize_filepath(Path(root, fileName))
-                    with open(fpath, "wb") as f:
+        if(self.contentType == "video"):
+            url = self.contentUrls[0]
+            fpath = root.joinpath(self.sanitizedName)
+            printName = self.name
+            r = self.handler.get(url, stream=True)
+            fpath = fpath.with_suffix(
+                mimetypes.guess_extension(r.headers['content-type']))
+            total_size_in_bytes = int(
+                r.headers.get('content-length', 0))
+            with tqdm(total=total_size_in_bytes, disable=not printProgress, unit='iB', unit_scale=True, desc=self.name) as tq:
+                with open(sanitize_filepath(fpath), 'wb') as file:
+                    for data in r.iter_content(1024):
+                        tq.update(len(data))
+                        file.write(data)
+                if total_size_in_bytes != 0 and tq.n != total_size_in_bytes:
+                    with open(sanitize_filepath(fpath.with_name(fpath.name + "_SKIPPED")), "wb") as _:
                         pass
-                    if(printProgress):
-                        tq.set_description(
-                            f'{printName} skipped because {e}', refresh=True)
+                    tq.set_description(f'{printName} skipped')
                     paths.append(fpath)
-        if(printProgress):
-            if(not Updated):
-                tq.set_description(
-                    f'Download "{self.__url}" finished with no updates', refresh=True)
-            else:
-                tq.set_description(
-                    f'Download of "{self.__url}" done, {Updated} new items found', refresh=True)
+        else:
+            with trange(len(self.contentUrls), disable=not printProgress, desc=self.name) as tq:
+                for i in tq:
+                    fpath = root.joinpath(
+                        f"{self.sanitizedName}_{str(i).zfill(len(str(self.pageCount-1)))}")
+                    printName = f'"{self.name}" page {i+1}/{self.pageCount}'
+                    globResult = list(root.glob(f"{fpath.name}*"))
+                    if(globResult):
+                        tq.set_description(f"{printName} exists")
+                        paths.append(globResult[0])
+                        continue
+                    else:
+                        try:
+                            r = self.handler.get(self.contentUrls[i])
+                            fpath = fpath.with_suffix(
+                                mimetypes.guess_extension(r.headers['content-type']))
+                            with open(sanitize_filepath(fpath), "wb") as f:
+                                f.write(r.content)
+                            tq.set_description(f'{printName} done')
+                            paths.append(fpath)
+                        except Exception as e:
+                            with open(sanitize_filepath(fpath.with_name(fpath.name + "_SKIPPED")), "wb") as _:
+                                pass
+                            tq.set_description(
+                                f'{printName} skipped because {e}')
+                            paths.append(fpath)
         return paths
 
 
