@@ -31,7 +31,7 @@ print(comic.tags)
 comic.downloadContent()
 ```
 
-Also see [Multporn-cli](https://github.com/pyporn-san/Multporn-CLI/) as an implementation example
+Also see [MCD-cli](https://github.com/pyporn-san/MCD-CLI/) as an implementation example
 
 ## Contributing
 
