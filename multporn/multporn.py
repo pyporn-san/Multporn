@@ -272,6 +272,8 @@ class Multporn(RequestHandler):
                         pass
                     tq.set_description(f'{printName} skipped')
                     paths.append(fpath)
+                else:
+                    paths.append(fpath)
         else:
             with trange(len(self.contentUrls), disable=not printProgress, desc=self.name) as tq:
                 for i in tq:
