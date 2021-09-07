@@ -16,6 +16,7 @@ from requests.models import Response
 from tqdm import tqdm, trange
 from urllib3.util.retry import Retry
 
+mimetypes.add_type("image/webp",".webp")
 
 class RequestHandler(object):
     """
