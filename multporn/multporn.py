@@ -409,3 +409,5 @@ class Utils(object):
         for i in range(len(links)):
             r.append({"link": links[i], "thumb": thumbs[i], "name": names[i]})
         return r
+
+print("This is a local Multporn import")
