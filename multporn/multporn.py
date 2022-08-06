@@ -260,8 +260,8 @@ class Multporn(RequestHandler):
             fpath = root.joinpath(self.sanitizedName)
             printName = self.name
             r = self.handler.get(url, stream=True)
-            fpath = fpath.with_suffix(
-                mimetypes.guess_extension(r.headers['content-type']))
+            fpath = fpath.with_name(fpath.name+mimetypes.guess_extension(
+                r.headers['content-type']))
             total_size_in_bytes = int(
                 r.headers.get('content-length', 0))
             with tqdm(total=total_size_in_bytes, disable=not printProgress, unit='iB', unit_scale=True, desc=self.name) as tq:
@@ -290,8 +290,8 @@ class Multporn(RequestHandler):
                     else:
                         try:
                             r = self.handler.get(self.contentUrls[i])
-                            fpath = fpath.with_suffix(
-                                mimetypes.guess_extension(r.headers['content-type']))
+                            fpath = fpath.with_name(fpath.name+mimetypes.guess_extension(
+                                r.headers['content-type']))
                             with open(sanitize_filepath(fpath), "wb") as f:
                                 f.write(r.content)
                             tq.set_description(f'{printName} done')
