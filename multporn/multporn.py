@@ -49,14 +49,15 @@ class Multporn:
         'Between Friends'
     """
 
-    def __init__(self, url: str, proxies: dict = {}, download: bool = False):
+    def __init__(self, url: str, proxies: dict = None, download: bool = False, requestsParams: dict = None):
         """
         Start a request session and load soup from <https://multporn.net> for this link.
         url is the url of the comic, proxies is an optional dict in the form of dict(https="https://123.456.78.90", http="http://123.456.78.90") 
         """
         self.session = initializeSession(proxies)
         self.url = urljoin(MULTPORN_HOME, url)
-        self.__response = self.session.get(self.url)
+        self.requestsParams = requestsParams
+        self.__response = self.session.get(self.url, **self.requestsParams)
         self.__soup = BeautifulSoup(self.__response.text, "html.parser")
         if(download):
             self.downloadContent()
@@ -194,7 +195,8 @@ class Multporn:
             url = self.contentUrls[0]
             fpath = root.joinpath(self.sanitizedName)
             printName = self.name
-            r = self.session.get(url, timeout=5, stream=True)
+            r = self.session.get(
+                url, timeout=5, stream=True, **self.requestsParams)
             fpath = fpath.with_name(fpath.name+mimetypes.guess_extension(
                 r.headers['content-type']))
             total_size_in_bytes = int(
@@ -225,7 +227,7 @@ class Multporn:
                     else:
                         try:
                             r = self.session.get(
-                                self.contentUrls[i], timeout=5)
+                                self.contentUrls[i], timeout=5, **self.requestsParams)
                             fpath = fpath.with_name(fpath.name+mimetypes.guess_extension(
                                 r.headers['content-type']))
                             with open(sanitize_filepath(fpath), "wb") as f:
@@ -248,13 +250,13 @@ class Webpage:
     If you're confused what I mean by "webpage", this is an example (obviously NSFW): <https://multporn.net/category/cosplay>
     """
 
-    def __init__(self, url, proxies):
+    def __init__(self, url, proxies: dict = None, requestParams: dict = None):
         """
         initializing the webpage object
         """
         self.session = initializeSession(proxies)
         self.url = urljoin(MULTPORN_HOME, url)
-        self.__response = self.session.get(self.url)
+        self.__response = self.session.get(self.url, **requestParams)
         self.__soup = BeautifulSoup(self.__response.text, "html.parser")
 
     @cached_property
@@ -312,17 +314,17 @@ class Utils:
     """
 
     @staticmethod
-    def Search(query: str, page: int = 1, queryType: Types = Types.All, sort: Sort = Sort.Relevant, proxies={}):
+    def Search(query: str, page: int = 1, queryType: Types = Types.All, sort: Sort = Sort.Relevant, proxies: dict = None, requestsParams: dict = None):
         """
         Return a dict with 2 keys link, thumb and name
         searches on page `page` that match this search `query` sorted by `sort`
         filter by type with `queryType`
         """
-        handler = initializeSession(proxies)
+        session = initializeSession(proxies)
         searchHome = urljoin(MULTPORN_HOME, "/search/")
         searchUrl = urljoin(
             searchHome, f"?views_fulltext={quote(query)}&type={queryType.value}&sort_by={sort.value}&page={page-1}")
-        Response = handler.get(searchUrl, timeout=5)
+        Response = session.get(searchUrl, timeout=5, **requestsParams)
         soup = BeautifulSoup(Response.text, "html.parser")
         # links
         try:
