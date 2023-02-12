@@ -262,8 +262,9 @@ class Webpage:
         """
         return all links found in this webpage
         """
-        return [urljoin(MULTPORN_HOME, i.a['href']) for i in self.__soup.find(
-                "table", "views-view-grid").find_all("strong")]
+        table = self.__soup.find(
+            "table", "views-view-grid") or self.__soup.find("div", "view-content")
+        return [urljoin(MULTPORN_HOME, i.a['href']) for i in table.find_all("strong") if i.a]
 
     @cached_property
     def name(self) -> str:
