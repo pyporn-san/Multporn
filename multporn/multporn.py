@@ -49,7 +49,7 @@ class Multporn:
         'Between Friends'
     """
 
-    def __init__(self, url: str, proxies: dict = None, download: bool = False, requestsParams: dict = None):
+    def __init__(self, url: str, proxies: dict = {}, download: bool = False, requestsParams: dict = {}):
         """
         Start a request session and load soup from <https://multporn.net> for this link.
         url is the url of the comic, proxies is an optional dict in the form of dict(https="https://123.456.78.90", http="http://123.456.78.90") 
@@ -250,7 +250,7 @@ class Webpage:
     If you're confused what I mean by "webpage", this is an example (obviously NSFW): <https://multporn.net/category/cosplay>
     """
 
-    def __init__(self, url, proxies: dict = None, requestParams: dict = None):
+    def __init__(self, url, proxies: dict = {}, requestParams: dict = {}):
         """
         initializing the webpage object
         """
@@ -314,7 +314,7 @@ class Utils:
     """
 
     @staticmethod
-    def Search(query: str, page: int = 1, queryType: Types = Types.All, sort: Sort = Sort.Relevant, proxies: dict = None, requestsParams: dict = None):
+    def Search(query: str, page: int = 1, queryType: Types = Types.All, sort: Sort = Sort.Relevant, proxies: dict = {}, requestsParams: dict = {}):
         """
         Return a dict with 2 keys link, thumb and name
         searches on page `page` that match this search `query` sorted by `sort`
