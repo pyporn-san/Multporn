@@ -20,11 +20,11 @@ sys.path.insert(0, os.path.abspath('../../multporn'))
 # -- Project information -----------------------------------------------------
 
 project = 'Multporn'
-copyright = '2021, pyporn-san'
+copyright = '2023, pyporn-san'
 author = 'pyporn-san'
 
 # The full version, including alpha/beta/rc tags
-release = '1.3.1'
+release = '1.4.0'
 
 
 # -- General configuration ---------------------------------------------------
