@@ -8,7 +8,7 @@ These are the main classes you would normally use
 
 .. toctree::
     :maxdepth: 2
-    
+
     multporn
     webpage
     utils
@@ -19,6 +19,6 @@ Classes that are not useful for direct use
 
 .. toctree::
     :maxdepth: 2
-    
+
     Enumerators
     request handler
