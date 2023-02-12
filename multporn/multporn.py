@@ -10,81 +10,35 @@ import requests
 from bs4 import BeautifulSoup
 from faker import Faker
 from pathvalidate import sanitize_filepath
-from requests import Session
 from requests.adapters import HTTPAdapter
-from requests.models import Response
 from tqdm import tqdm, trange
 from urllib3.util.retry import Retry
 
 mimetypes.add_type("image/webp", ".webp")
+fake = Faker()
+MULTPORN_HOME = "https://multporn.net/"
 
 
-class RequestHandler(object):
-    """
-    Defines a synchronous request handler class that provides methods and
-    properties for working with REST APIs that is backed by the `requests`
-    library.
-    """
-    _timeout = (5, 5)
-    _total = 5
-    _status_forcelist = [413, 429, 500, 502, 503, 504]
-    _backoff_factor = 1
-    _fake = Faker()
-
-    def __init__(self,
-                 timeout: Tuple[float, float] = _timeout,
-                 total: int = _total,
-                 status_forcelist: List[int] = _status_forcelist.copy(),
-                 backoff_factor: int = _backoff_factor):
-        """Instantiates a new request handler object."""
-        self.timeout = timeout
-        self.total = total
-        self.status_forcelist = status_forcelist
-        self.backoff_factor = backoff_factor
-
-    @cached_property
-    def retry_strategy(self) -> Retry:
-        """
-        The retry strategy returns the retry configuration made up of the
-        number of total retries, the status forcelist as well as the backoff
-        factor. It is used in the session property where these values are
-        passed to the HTTPAdapter.
-        """
-        return Retry(total=self.total,
-                     status_forcelist=self.status_forcelist,
-                     backoff_factor=self.backoff_factor
-                     )
-
-    @cached_property
-    def session(self) -> Session:
-        """
-        Creates a custom session object. A request session provides cookie
-        persistence, connection-pooling, and further configuration options
-        that are exposed in the RequestHandler methods in form of parameters
-        and keyword arguments.
-        """
-        assert_status_hook = lambda response, * \
-            args, **kwargs: response.raise_for_status()
-        session = requests.Session()
-        session.mount("https://", HTTPAdapter(max_retries=self.retry_strategy))
-        session.hooks['response'] = [assert_status_hook]
-        session.headers.update({
-            "User-Agent": RequestHandler._fake.chrome(version_from=80, version_to=86, build_from=4100, build_to=4200)
-        })
-        return session
-
-    def get(self, url: str, params: dict = None, **kwargs) -> Response:
-        """
-        Returns the GET request encoded in `utf-8`. Adds proxies to this session
-        on the fly if urllib is able to pick up the system's proxy settings.
-        """
-        response = self.session.get(
-            url, timeout=self.timeout, params=params, proxies=getproxies(), **kwargs)
-        response.encoding = 'utf-8'
-        return response
+def initializeSession(proxies: dict = {}):
+    """Initialize a requests.Session object for persistent cookies and proxies"""
+    session = requests.Session()
+    session.proxies.update(proxies or getproxies())
+    session.headers.update({"User-Agent": fake.chrome(version_from=80,
+                                                      version_to=86,
+                                                      build_from=4100,
+                                                      build_to=4200)})
+    retries = Retry(total=5,
+                    backoff_factor=1,
+                    status_forcelist=[413, 429, 500, 502, 503, 504],)
+    retry_strategy = HTTPAdapter(max_retries=retries)
+    session.mount("http://", retry_strategy)
+    session.mount("https://", retry_strategy)
+    session.hooks.update({"response": lambda r, *args, **
+                         kwargs: r.raise_for_status()})
+    return session
 
 
-class Multporn(RequestHandler):
+class Multporn:
     """
     A `multporn <https://multporn.net>`__ comic class
 
@@ -94,19 +48,15 @@ class Multporn(RequestHandler):
         >>> print(comic)
         'Between Friends'
     """
-    HOME = "https://multporn.net/"
 
-    def __init__(self, url: str, download: bool = False, timeout: Tuple[float, float] = RequestHandler._timeout,
-                 total: int = RequestHandler._total,
-                 status_forcelist: List[int] = RequestHandler._status_forcelist.copy(), backoff_factor: int = RequestHandler._backoff_factor):
+    def __init__(self, url: str, proxies: dict = {}, download: bool = False):
         """
         Start a request session and load soup from <https://multporn.net> for this link.
+        url is the url of the comic, proxies is an optional dict in the form of dict(https="https://123.456.78.90", http="http://123.456.78.90") 
         """
-        super().__init__(timeout, total, status_forcelist, backoff_factor)
-        self.__handler = RequestHandler(
-            self.timeout, self.total, self.status_forcelist, self.backoff_factor)
-        self.__url = urljoin(self.HOME, url)
-        self.__response = self.__handler.get(self.__url)
+        self.session = initializeSession(proxies)
+        self.url = urljoin(MULTPORN_HOME, url)
+        self.__response = self.session.get(self.url)
         self.__soup = BeautifulSoup(self.__response.text, "html.parser")
         if(download):
             self.downloadContent()
@@ -163,13 +113,6 @@ class Multporn(RequestHandler):
         Return the sanitized name of the Multporn object
         """
         return sanitize_filepath(self.name)
-
-    @cached_property
-    def url(self) -> str:
-        """
-        Returns the url associated with the Multporn object
-        """
-        return self.__url
 
     @cached_property
     def thumbnail(self) -> str:
@@ -238,28 +181,20 @@ class Multporn(RequestHandler):
         """
         return self.url.split("/")[3]
 
-    @cached_property
-    def handler(self) -> RequestHandler:
-        """
-        Returns the handler of the Multporn object
-        """
-        return self.__handler
-
     def downloadContent(self, root: Union[Path, str] = Path("Albums"), printProgress: bool = True):
         """
         Downloads all comic pages that don't already exist in the directory
         Logging can be disabled by passing false to printProgress
         """
         paths = []
-        if(isinstance(root, str)):
-            root = Path(root)
+        root = Path(root)
         root = root.joinpath(sanitize_filepath(self.sanitizedName))
         root.mkdir(parents=True, exist_ok=True)
         if(self.contentType == "video"):
             url = self.contentUrls[0]
             fpath = root.joinpath(self.sanitizedName)
             printName = self.name
-            r = self.handler.get(url, stream=True)
+            r = self.session.get(url, timeout=5, stream=True)
             fpath = fpath.with_name(fpath.name+mimetypes.guess_extension(
                 r.headers['content-type']))
             total_size_in_bytes = int(
@@ -289,7 +224,8 @@ class Multporn(RequestHandler):
                         continue
                     else:
                         try:
-                            r = self.handler.get(self.contentUrls[i])
+                            r = self.session.get(
+                                self.contentUrls[i], timeout=5)
                             fpath = fpath.with_name(fpath.name+mimetypes.guess_extension(
                                 r.headers['content-type']))
                             with open(sanitize_filepath(fpath), "wb") as f:
@@ -312,23 +248,22 @@ class Webpage:
     If you're confused what I mean by "webpage", this is an example (obviously NSFW): <https://multporn.net/category/cosplay>
     """
 
-    def __init__(self, url):
+    def __init__(self, url, proxies):
         """
         initializing the webpage object
         """
-        self.__url = url
-        self.__soup = BeautifulSoup(requests.get(url).text, "html.parser")
-        self.__name = self.__links = "Unset"
+        self.session = initializeSession(proxies)
+        self.url = urljoin(MULTPORN_HOME, url)
+        self.__response = self.session.get(self.url)
+        self.__soup = BeautifulSoup(self.__response.text, "html.parser")
 
     @cached_property
     def links(self) -> List[str]:
         """
         return all links found in this webpage
         """
-        if (self.__links == "Unset"):
-            self.__links = [urljoin(Multporn.HOME, i.a['href']) for i in self.__soup.find(
+        return [urljoin(MULTPORN_HOME, i.a['href']) for i in self.__soup.find(
                 "table", "views-view-grid").find_all("strong")]
-        return self.__links
 
     @cached_property
     def name(self) -> str:
@@ -336,10 +271,8 @@ class Webpage:
         Return the name of this webpage
         usually is a category, character, author, etc
         """
-        if(self.__name == "Unset"):
-            self.__name = self.__soup.find(
-                "meta", attrs={"name": "dcterms.title"})["content"]
-        return self.__name
+        return self.__soup.find(
+            "meta", attrs={"name": "dcterms.title"})["content"]
 
 
 @unique
@@ -372,26 +305,27 @@ class Types(Enum):
     Humor = "13"
 
 
-class Utils(object):
+class Utils:
     """
     A class used to help with various multporn related tasks
     """
 
     @staticmethod
-    def Search(query: str, page: int = 1, queryType: Types = Types.All, sort: Sort = Sort.Relevant, handler=RequestHandler()):
+    def Search(query: str, page: int = 1, queryType: Types = Types.All, sort: Sort = Sort.Relevant, proxies={}):
         """
         Return a dict with 2 keys link, thumb and name
         searches on page `page` that match this search `query` sorted by `sort`
         filter by type with `queryType`
         """
-        searchHome = urljoin(Multporn.HOME, "/search/")
+        handler = initializeSession(proxies)
+        searchHome = urljoin(MULTPORN_HOME, "/search/")
         searchUrl = urljoin(
             searchHome, f"?views_fulltext={quote(query)}&type={queryType.value}&sort_by={sort.value}&page={page-1}")
-        Response = handler.get(searchUrl)
+        Response = handler.get(searchUrl, timeout=5)
         soup = BeautifulSoup(Response.text, "html.parser")
         # links
         try:
-            links = [urljoin(Multporn.HOME, i.a['href']) for i in soup.find(
+            links = [urljoin(MULTPORN_HOME, i.a['href']) for i in soup.find(
                 "div", attrs={"class": "view-content"}).find_all("strong")]
         except AttributeError:
             return []
