@@ -21,4 +21,3 @@ Classes that are not useful for direct use
     :maxdepth: 2
 
     Enumerators
-    request handler
