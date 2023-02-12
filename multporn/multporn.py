@@ -207,8 +207,8 @@ class Multporn:
                         tq.update(len(data))
                         file.write(data)
                 if total_size_in_bytes != 0 and tq.n != total_size_in_bytes:
-                    with open(sanitize_filepath(fpath.with_name(fpath.name + "_SKIPPED")), "wb") as _:
-                        pass
+                    sanitize_filepath(fpath.with_name(
+                        fpath.name + "_SKIPPED")).touch(exist_ok=True)
                     tq.set_description(f'{printName} skipped')
                     paths.append(fpath)
                 else:
@@ -234,9 +234,10 @@ class Multporn:
                                 f.write(r.content)
                             tq.set_description(f'{printName} done')
                             paths.append(fpath)
-                        except Exception as e:
-                            with open(sanitize_filepath(fpath.with_name(fpath.name + "_SKIPPED")), "wb") as _:
-                                pass
+                        except requests.exceptions.HTTPError as e:
+                            if r.status_code == 404:
+                                sanitize_filepath(fpath.with_name(
+                                    fpath.name + "_SKIPPED")).touch(exist_ok=True)
                             tq.set_description(
                                 f'{printName} skipped because {e}')
                             paths.append(fpath)
