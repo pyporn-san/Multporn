@@ -1,4 +1,4 @@
-beautifulsoup4>=4.10.0
+beautifulsoup4>=4.14.3
 Faker>=16.6.1
 pathvalidate>=2.5.0
 requests>=2.28.2
